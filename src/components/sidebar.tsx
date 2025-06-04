@@ -81,14 +81,14 @@ export function Sidebar({ className }: SidebarProps) {
                     className={cn(
                       "w-full justify-start gap-3 transition-all duration-300 relative overflow-hidden group tracking-wide text-lg py-6",
                       isActive 
-                        ? "bg-gradient-to-r from-solana-purple/30 to-solana-green/30 text-black font-medium" 
-                        : "hover:bg-gradient-to-r hover:from-solana-purple/20 hover:to-solana-green/20 text-black/80 hover:text-black"
+                        ? "bg-[#7a37cc] text-white font-medium" 
+                        : "hover:bg-[#9945FF]/20 text-black/80 hover:text-black"
                     )}
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-solana-purple/20 via-purple-500/20 to-solana-green/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-gradient" />
                     <item.icon className={cn(
                       "h-6 w-6 transition-all duration-300 transform group-hover:scale-110",
-                      isActive ? "text-solana-purple" : "text-black/70 group-hover:text-solana-purple"
+                      isActive ? "text-white" : "text-black/70 group-hover:text-[#7a37cc]"
                     )} />
                     <span className="relative z-10">{item.name}</span>
                   </Button>
