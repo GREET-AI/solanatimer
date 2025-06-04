@@ -47,10 +47,15 @@ export function Sidebar({ className }: SidebarProps) {
       {/* Animated background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-solana-purple/10 via-purple-500/5 to-solana-green/10 animate-gradient" />
       
-      {/* Glowing lines */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-b from-solana-purple/30 via-solana-green/20 to-transparent" />
-        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-solana-purple/30 to-solana-green/20" />
+      {/* Animated LED border */}
+      <div className="absolute right-0 top-0 w-[2px] h-full">
+        <div className="absolute inset-0 animate-led-flow">
+          <div className="absolute inset-0 bg-gradient-to-b from-solana-purple via-purple-500 to-solana-green opacity-50 blur-[2px]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-solana-purple via-purple-500 to-solana-green" />
+        </div>
+        <div className="absolute inset-0 animate-led-pulse">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white to-transparent opacity-50 blur-sm" />
+        </div>
       </div>
 
       <div className="space-y-4 py-4 relative">
