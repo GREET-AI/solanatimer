@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="space-y-16 p-6">
       {/* Hero Section */}
-      <div className="relative -mx-6 -mt-6 px-6 py-20 overflow-hidden">
+      <div className="relative -mx-6 -mt-6 px-6 py-20 overflow-hidden bg-white/50">
         {/* Animated background */}
         <div className="absolute inset-0 bg-gradient-to-br from-solana-purple/20 via-transparent to-solana-green/20 animate-gradient" />
         
@@ -23,7 +23,7 @@ export default function Home() {
         <div className="relative max-w-5xl mx-auto text-center space-y-8">
           {/* Animated logo */}
           <div className="relative w-40 h-40 mx-auto mb-8 group">
-            <div className="absolute inset-0 bg-gradient-to-r from-solana-purple via-purple-500 to-solana-green rounded-full blur-xl group-hover:blur-2xl transition-all duration-500 animate-pulse opacity-50" />
+            <div className="absolute inset-0 bg-gradient-to-r from-solana-purple via-purple-500 to-solana-green rounded-full blur-xl group-hover:blur-2xl transition-all duration-500 animate-pulse opacity-75" />
             <Image
               src="/clock.gif"
               alt="Timer Logo"
@@ -34,15 +34,17 @@ export default function Home() {
             />
           </div>
 
-          <h1 className="text-6xl font-bold tracking-tight">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-solana-purple to-solana-green animate-gradient">
-              Welcome to the Solana Timer!
-            </span>
-          </h1>
-          
-          <p className="text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            In the Timer Community, every second counts—because time is the currency of connection.
-          </p>
+          <div className="space-y-6">
+            <h1 className="text-6xl font-bold tracking-tight relative">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-solana-purple to-solana-green animate-gradient">
+                Welcome to the Solana Timer!
+              </span>
+            </h1>
+            
+            <p className="text-2xl text-black/80 max-w-3xl mx-auto leading-relaxed font-medium">
+              In the Timer Community, every second counts—because time is the currency of connection.
+            </p>
+          </div>
 
           {/* Animated particles */}
           <div className="absolute inset-0 pointer-events-none">
