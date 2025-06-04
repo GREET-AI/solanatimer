@@ -90,6 +90,28 @@ button,
   }
 }
 
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shooting-star {
+  0% {
+    transform: translateY(0) translateX(0) rotate(-45deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(200px) translateX(200px) rotate(-45deg);
+    opacity: 0;
+  }
+}
+
 @keyframes rotate {
   from {
     transform: rotate(0deg);
@@ -102,6 +124,19 @@ button,
 .animate-gradient {
   animation: gradient 15s ease infinite;
   background-size: 200% 200%;
+}
+
+.animate-gradient-slow {
+  animation: gradient 20s ease infinite;
+  background-size: 400% 400%;
+}
+
+.animate-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.animate-shooting-star {
+  animation: shooting-star 2s linear infinite;
 }
 
 @theme inline {

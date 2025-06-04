@@ -14,7 +14,7 @@ interface SidebarProps {
 const navigation = [
   {
     name: "How it Works?",
-    href: "/",
+    href: "/how-it-works",
     icon: GraduationCap
   },
   {
@@ -86,14 +86,14 @@ export function Sidebar({ className }: SidebarProps) {
                     className={cn(
                       "w-full justify-start gap-3 transition-all duration-300 relative overflow-hidden group tracking-wide text-lg py-6",
                       isActive 
-                        ? "bg-gradient-to-r from-transparent to-[#7a37cc]/40 text-black font-medium" 
-                        : "hover:bg-gradient-to-r hover:from-transparent hover:to-[#9945FF]/30 text-black/80 hover:text-black"
+                        ? "bg-gradient-to-r from-transparent to-[#7a37cc]/40 text-white font-medium" 
+                        : "hover:bg-gradient-to-r hover:from-transparent hover:to-[#9945FF]/30 text-white/80 hover:text-white"
                     )}
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-solana-purple/10 to-solana-green/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-gradient" />
                     <item.icon className={cn(
                       "h-6 w-6 transition-all duration-300 transform group-hover:scale-110",
-                      isActive ? "text-[#7a37cc]" : "text-black/70 group-hover:text-[#7a37cc]"
+                      isActive ? "text-white" : "text-white/70 group-hover:text-white"
                     )} />
                     <span className="relative z-10">{item.name}</span>
                   </Button>
