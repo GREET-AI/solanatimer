@@ -28,12 +28,23 @@ module.exports = {
         "led-pulse": {
           "0%, 100%": { opacity: "0.5", transform: "translateY(-100%)" },
           "50%": { opacity: "1", transform: "translateY(100%)" }
+        },
+        "float": {
+          "0%, 100%": { 
+            transform: "translateY(0px) translateX(0px)",
+            opacity: "0.3"
+          },
+          "50%": { 
+            transform: "translateY(-20px) translateX(10px)",
+            opacity: "0.6"
+          }
         }
       },
       animation: {
         "led-flow": "led-flow 8s ease infinite",
         "led-pulse": "led-pulse 4s ease infinite",
         "gradient": "gradient 6s linear infinite",
+        "float": "float 6s ease-in-out infinite",
       },
     },
   },

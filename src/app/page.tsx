@@ -2,19 +2,71 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Timer, Coins, TrendingUp, Clock } from "lucide-react";
+import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="space-y-8 p-6">
-      <div className="text-center space-y-4">
-        <h1 className="text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-solana-purple to-solana-green animate-gradient">
-          Welcome to Solana Timer
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Earn more by holding longer. A revolutionary token reward system that incentivizes long-term holding through time-based rewards.
-        </p>
+    <div className="space-y-16 p-6">
+      {/* Hero Section */}
+      <div className="relative -mx-6 -mt-6 px-6 py-20 overflow-hidden">
+        {/* Animated background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-solana-purple/20 via-transparent to-solana-green/20 animate-gradient" />
+        
+        {/* Animated border */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 w-full h-[2px] bg-gradient-to-r from-transparent via-solana-purple to-transparent animate-pulse" />
+          <div className="absolute bottom-0 w-full h-[2px] bg-gradient-to-r from-transparent via-solana-green to-transparent animate-pulse" />
+          <div className="absolute left-0 h-full w-[2px] bg-gradient-to-b from-transparent via-solana-purple to-transparent animate-pulse" />
+          <div className="absolute right-0 h-full w-[2px] bg-gradient-to-b from-transparent via-solana-green to-transparent animate-pulse" />
+        </div>
+
+        <div className="relative max-w-5xl mx-auto text-center space-y-8">
+          {/* Animated logo */}
+          <div className="relative w-40 h-40 mx-auto mb-8 group">
+            <div className="absolute inset-0 bg-gradient-to-r from-solana-purple via-purple-500 to-solana-green rounded-full blur-xl group-hover:blur-2xl transition-all duration-500 animate-pulse opacity-50" />
+            <Image
+              src="/clock.gif"
+              alt="Timer Logo"
+              width={160}
+              height={160}
+              priority
+              className="relative rounded-full hover:scale-105 transition-transform duration-500 group-hover:rotate-12"
+            />
+          </div>
+
+          <h1 className="text-6xl font-bold tracking-tight">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-solana-purple to-solana-green animate-gradient">
+              Welcome to the Solana Timer!
+            </span>
+          </h1>
+          
+          <p className="text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            In the Timer Community, every second counts—because time is the currency of connection.
+          </p>
+
+          {/* Animated particles */}
+          <div className="absolute inset-0 pointer-events-none">
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute animate-float"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 5}s`,
+                  width: '4px',
+                  height: '4px',
+                  background: Math.random() > 0.5 ? '#9945FF' : '#14F195',
+                  borderRadius: '50%',
+                  opacity: 0.3,
+                }}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
+      {/* Existing content */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2 max-w-5xl mx-auto">
         <Card className="relative overflow-hidden group hover:border-solana-purple/40 transition-all duration-500">
           <div className="absolute inset-0 bg-gradient-to-r from-solana-purple/10 via-purple-500/10 to-solana-green/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-gradient" />
