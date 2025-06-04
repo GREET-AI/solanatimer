@@ -5,7 +5,8 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { LayoutGrid, BookOpen, LineChart, GraduationCap, Timer } from "lucide-react";
+import { GraduationCap, Timer } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface SidebarProps {
   className?: string;
@@ -18,32 +19,59 @@ const navigation = [
     icon: GraduationCap
   },
   {
-    name: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutGrid
-  },
-  {
     name: "Timer",
     href: "/timer",
     icon: Timer
-  },
-  {
-    name: "Documentation",
-    href: "/docs",
-    icon: BookOpen
-  },
-  {
-    name: "Analytics",
-    href: "/analytics",
-    icon: LineChart
   }
 ];
+
+function CountdownTimer() {
+  const [timeLeft, setTimeLeft] = useState('');
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const nextHour = new Date(now);
+      nextHour.setHours(nextHour.getHours() + 1);
+      nextHour.setMinutes(0);
+      nextHour.setSeconds(0);
+      nextHour.setMilliseconds(0);
+
+      const difference = nextHour.getTime() - now.getTime();
+      
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    };
+
+    setTimeLeft(calculateTimeLeft());
+
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="px-3 -mt-2 relative overflow-hidden text-center">
+      <div className="flex items-center justify-center mb-1">
+        <Timer className="w-5 h-5 text-[#14F195] mr-2" />
+        <span className="font-sophie text-2xl bg-gradient-to-r from-[#9945FF] to-[#14F195] bg-clip-text text-transparent animate-gradient">
+          {timeLeft}
+        </span>
+      </div>
+      <p className="text-sm text-white/70 font-sophie">Next Distribution In</p>
+    </div>
+  );
+}
 
 export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <div className={cn("pb-12 min-h-screen border-r relative overflow-hidden backdrop-blur-sm border-opacity-20", className)}>
+    <div className={cn("pb-12 border-r relative overflow-hidden backdrop-blur-sm border-opacity-20", className)}>
       {/* Animated background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-solana-purple/40 via-purple-500/20 to-solana-green/40 animate-gradient" />
       
@@ -61,7 +89,7 @@ export function Sidebar({ className }: SidebarProps) {
       <div className="space-y-4 py-4 relative">
         <div className="px-3 py-2">
           <Link href="/" className="block">
-            <div className="flex items-center justify-center mb-6 relative group">
+            <div className="flex items-center justify-center mb-4 relative group">
               <div className="absolute inset-0 bg-gradient-to-r from-solana-purple/50 via-purple-500/30 to-solana-green/50 rounded-full blur-lg group-hover:blur-xl transition-all duration-500 animate-pulse opacity-75" />
               <Image
                 src="/clock.gif"
@@ -76,7 +104,11 @@ export function Sidebar({ className }: SidebarProps) {
               Solana Timer
             </h2>
           </Link>
-          <nav className="space-y-2">
+
+          {/* Add CountdownTimer here */}
+          <CountdownTimer />
+
+          <nav className="space-y-2 mt-6">
             {navigation.map((item) => {
               const isActive = pathname === item.href;
               return (

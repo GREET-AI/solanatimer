@@ -19,6 +19,7 @@
   --solana-gradient-mid: #14F195;
   --solana-gradient-end: #14F195;
   --font-sophie: 'SophieComic', system-ui, sans-serif;
+  --background: #000000;
 }
 
 /* Global Typography */
@@ -121,6 +122,25 @@ button,
   }
 }
 
+@keyframes float-number {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+  }
+  20% {
+    opacity: 0.3;
+    transform: translateY(0) scale(1);
+  }
+  80% {
+    opacity: 0.3;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.8);
+  }
+}
+
 .animate-gradient {
   animation: gradient 15s ease infinite;
   background-size: 200% 200%;
@@ -137,6 +157,10 @@ button,
 
 .animate-shooting-star {
   animation: shooting-star 2s linear infinite;
+}
+
+.animate-float-number {
+  animation: float-number 3s ease-in-out forwards;
 }
 
 @theme inline {
@@ -181,7 +205,6 @@ button,
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -255,6 +278,9 @@ button,
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sophie);
+    background-color: #000000;
+    min-height: 100%;
+    color: white;
   }
 }
 

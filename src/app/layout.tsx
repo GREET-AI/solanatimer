@@ -19,14 +19,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning className="bg-black">
+      <body className={`${inter.className} bg-black min-h-screen`}>
         <ThemeProvider>
           <div className="flex min-h-screen bg-black">
-            <Sidebar className="w-64 hidden md:block" />
-            <div className="flex-1 relative">
-              <Navbar className="absolute top-0 left-0 right-0 z-50 bg-transparent" />
-              <main className="min-h-screen">
+            <Sidebar className="w-64 hidden md:block fixed h-screen" />
+            <div className="flex-1 md:ml-64 bg-black min-h-screen">
+              <Navbar className="fixed top-0 left-0 right-0 z-50 bg-transparent md:left-64" />
+              <main className="min-h-screen pt-16 bg-black">
                 {children}
               </main>
             </div>
