@@ -181,7 +181,7 @@ export default function HowItWorks() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-3 text-[#14F195]">Step 3: Buy on Pump.fun</h3>
-                  <p className="text-white/80">Visit pump.fun and connect your wallet. Search for "Solana Timer" using our official token address (announced on @solana-timer). Buy at least 100,000 tokens to qualify for rewards.</p>
+                  <p className="text-white/80">Visit pump.fun and connect your wallet. Search for &quot;Solana Timer&quot; using our official token address (announced on @solana-timer). Buy at least 100,000 tokens to qualify for rewards.</p>
                 </div>
               </div>
             </section>
