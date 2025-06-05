@@ -141,6 +141,25 @@ button,
   }
 }
 
+@keyframes float-logo {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 0;
+  }
+  20% {
+    transform: translateY(-20px) scale(1);
+    opacity: var(--tw-opacity, 0.2);
+  }
+  80% {
+    transform: translateY(-40px) scale(1);
+    opacity: var(--tw-opacity, 0.2);
+  }
+  100% {
+    transform: translateY(-60px) scale(0);
+    opacity: 0;
+  }
+}
+
 .animate-gradient {
   animation: gradient 15s ease infinite;
   background-size: 200% 200%;
@@ -161,6 +180,10 @@ button,
 
 .animate-float-number {
   animation: float-number 3s ease-in-out forwards;
+}
+
+.animate-float-logo {
+  animation: float-logo 4s ease-in-out forwards;
 }
 
 @theme inline {

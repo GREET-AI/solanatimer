@@ -4,7 +4,6 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { Sidebar } from "@/components/sidebar";
-import { Navbar } from "@/components/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,8 +24,7 @@ export default function RootLayout({
           <div className="flex min-h-screen bg-black">
             <Sidebar className="w-64 hidden md:block fixed h-screen" />
             <div className="flex-1 md:ml-64 bg-black min-h-screen">
-              <Navbar className="fixed top-0 left-0 right-0 z-50 bg-transparent md:left-64" />
-              <main className="min-h-screen pt-16 bg-black">
+              <main className="min-h-screen bg-black">
                 {children}
               </main>
             </div>
