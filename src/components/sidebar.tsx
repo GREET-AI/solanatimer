@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Calculator, Timer, Function, Info } from "lucide-react";
+import { Calculator, Timer, FunctionSquare, Info } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface SidebarProps {
@@ -14,7 +14,7 @@ interface SidebarProps {
 
 const navigation = [
   { name: "How it works?", href: "/", icon: Info },
-  { name: "Do the math", href: "/do-the-math", icon: Calculator },
+  { name: "Do the math", href: "/do-the-math", icon: FunctionSquare },
   { name: "Calculator", href: "/calculator", icon: Calculator },
   { name: "Timer", href: "/timer", icon: Timer },
 ];
