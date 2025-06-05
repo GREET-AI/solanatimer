@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Timer, Function, Home, Info } from "lucide-react";
+import { Calculator, Timer, Function, Info } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface SidebarProps {
