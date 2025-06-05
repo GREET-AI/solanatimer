@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Wallet, Timer, ArrowRightCircle } from 'lucide-react';
+import { Wallet, Timer, ArrowRightCircle, Shield } from 'lucide-react';
 
 interface FloatingNumber {
   id: number;
@@ -229,7 +229,7 @@ export default function HowItWorks() {
               </div>
 
               {/* Step 1 */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-[#9945FF]/20 relative overflow-hidden group hover:border-[#9945FF]/40 transition-all duration-300">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-[#9945FF]/20 relative overflow-hidden group hover:border-[#9945FF]/40 transition-all duration-300 flex flex-col min-h-[320px]">
                 <div className="absolute -top-4 -left-4 w-16 h-16 bg-[#14F195]/10 rounded-full flex items-center justify-center text-3xl font-bold text-[#14F195] transform -rotate-12">
                   1
                 </div>
@@ -243,9 +243,9 @@ export default function HowItWorks() {
                   />
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-br from-[#9945FF]/30 via-purple-900/20 to-[#14F195]/30 animate-gradient-slow group-hover:from-[#9945FF]/40 group-hover:to-[#14F195]/40" />
-                <div className="relative z-10">
+                <div className="relative z-10 flex-1 flex flex-col">
                   <h3 className="text-2xl font-bold mb-6 text-[#14F195] mt-8">Set Up Your Wallet</h3>
-                  <ul className="space-y-3 text-white/80 text-sm">
+                  <ul className="space-y-3 text-white/80 text-sm mb-auto">
                     <li className="flex items-start">
                       <ArrowRightCircle className="w-4 h-4 mr-2 mt-0.5 text-[#14F195]" />
                       <span>Create Phantom or Solflare wallet</span>
@@ -259,11 +259,22 @@ export default function HowItWorks() {
                       <span>Receive SOL rewards automatically</span>
                     </li>
                   </ul>
+                  <div className="flex justify-end mt-4">
+                    <a 
+                      href="https://phantom.com"
+                      target="_blank"
+                      rel="noopener noreferrer" 
+                      className="bg-purple-900/40 hover:bg-purple-900/60 text-white/70 hover:text-white/90 px-4 py-2 rounded-lg text-sm transition-all flex items-center group font-sophie border-2 border-white/10 hover:border-white/20"
+                    >
+                      Download
+                      <ArrowRightCircle className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
+                    </a>
+                  </div>
                 </div>
               </div>
 
               {/* Step 2 */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-[#9945FF]/20 relative overflow-hidden group hover:border-[#9945FF]/40 transition-all duration-300">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-[#9945FF]/20 relative overflow-hidden group hover:border-[#9945FF]/40 transition-all duration-300 flex flex-col min-h-[320px]">
                 <div className="absolute -top-4 -left-4 w-16 h-16 bg-[#14F195]/10 rounded-full flex items-center justify-center text-3xl font-bold text-[#14F195] transform -rotate-12">
                   2
                 </div>
@@ -277,9 +288,9 @@ export default function HowItWorks() {
                   />
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-br from-[#9945FF]/30 via-purple-900/20 to-[#14F195]/30 animate-gradient-slow group-hover:from-[#9945FF]/40 group-hover:to-[#14F195]/40" />
-                <div className="relative z-10">
+                <div className="relative z-10 flex-1 flex flex-col">
                   <h3 className="text-2xl font-bold mb-6 text-[#14F195] mt-8">Fund Your Wallet</h3>
-                  <ul className="space-y-3 text-white/80 text-sm">
+                  <ul className="space-y-3 text-white/80 text-sm mb-auto">
                     <li className="flex items-start">
                       <ArrowRightCircle className="w-4 h-4 mr-2 mt-0.5 text-[#14F195]" />
                       <span>Buy SOL on major exchanges</span>
@@ -293,11 +304,22 @@ export default function HowItWorks() {
                       <span>Need ~1 SOL for 100k tokens</span>
                     </li>
                   </ul>
+                  <div className="flex justify-end mt-4">
+                    <a 
+                      href="https://jup.ag"
+                      target="_blank"
+                      rel="noopener noreferrer" 
+                      className="bg-purple-900/40 hover:bg-purple-900/60 text-white/70 hover:text-white/90 px-4 py-2 rounded-lg text-sm transition-all flex items-center group font-sophie border-2 border-white/10 hover:border-white/20"
+                    >
+                      Trade
+                      <ArrowRightCircle className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
+                    </a>
+                  </div>
                 </div>
               </div>
 
               {/* Step 3 */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-[#9945FF]/20 relative overflow-hidden group hover:border-[#9945FF]/40 transition-all duration-300">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-[#9945FF]/20 relative overflow-hidden group hover:border-[#9945FF]/40 transition-all duration-300 flex flex-col min-h-[320px]">
                 <div className="absolute -top-4 -left-4 w-16 h-16 bg-[#14F195]/10 rounded-full flex items-center justify-center text-3xl font-bold text-[#14F195] transform -rotate-12">
                   3
                 </div>
@@ -311,9 +333,9 @@ export default function HowItWorks() {
                   />
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-br from-[#9945FF]/30 via-purple-900/20 to-[#14F195]/30 animate-gradient-slow group-hover:from-[#9945FF]/40 group-hover:to-[#14F195]/40" />
-                <div className="relative z-10">
+                <div className="relative z-10 flex-1 flex flex-col">
                   <h3 className="text-2xl font-bold mb-6 text-[#14F195] mt-8">Buy on Pump.fun</h3>
-                  <ul className="space-y-3 text-white/80 text-sm">
+                  <ul className="space-y-3 text-white/80 text-sm mb-auto">
                     <li className="flex items-start">
                       <ArrowRightCircle className="w-4 h-4 mr-2 mt-0.5 text-[#14F195]" />
                       <span>Visit pump.fun</span>
@@ -327,6 +349,17 @@ export default function HowItWorks() {
                       <span>Buy min. 100k tokens</span>
                     </li>
                   </ul>
+                  <div className="flex justify-end mt-4">
+                    <a 
+                      href="https://pump.fun/board"
+                      target="_blank"
+                      rel="noopener noreferrer" 
+                      className="bg-purple-900/40 hover:bg-purple-900/60 text-white/70 hover:text-white/90 px-4 py-2 rounded-lg text-sm transition-all flex items-center group font-sophie border-2 border-white/10 hover:border-white/20"
+                    >
+                      Visit
+                      <ArrowRightCircle className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -339,53 +372,101 @@ export default function HowItWorks() {
             </div>
 
             {/* Reward System Card */}
-            <div className="mt-12 bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-[#9945FF]/20 relative overflow-hidden group hover:border-[#9945FF]/40 transition-all duration-300">
+            <div className="mt-12 bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-[#9945FF]/20 relative overflow-hidden group hover:border-[#9945FF]/40 transition-all duration-300 flex flex-col min-h-[320px]">
+              <div className="absolute -top-4 -left-4 w-16 h-16 bg-[#14F195]/10 rounded-full flex items-center justify-center text-3xl font-bold text-[#14F195] transform -rotate-12">
+                $
+              </div>
+              <div className="absolute -top-8 -right-8 w-32 h-32 bg-[#9945FF]/5 rounded-full flex items-center justify-center transform rotate-12 group-hover:rotate-6 transition-transform">
+                <Image
+                  src="/solana.png"
+                  alt="Solana"
+                  width={48}
+                  height={48}
+                  className="w-16 h-16 object-contain"
+                />
+              </div>
               <div className="absolute inset-0 bg-gradient-to-br from-[#9945FF]/30 via-purple-900/20 to-[#14F195]/30 animate-gradient-slow group-hover:from-[#9945FF]/40 group-hover:to-[#14F195]/40" />
-              <div className="relative z-10">
-                <h2 className="text-3xl font-bold mb-6 text-white">Reward System</h2>
-                <div className="grid md:grid-cols-2 gap-8">
+              <div className="relative z-10 flex-1 flex flex-col">
+                <h2 className="text-2xl font-bold mb-6 text-[#14F195] mt-8">Reward System</h2>
+                <div className="grid md:grid-cols-2 gap-8 mb-auto">
                   <div>
                     <h3 className="text-xl font-bold mb-4 text-[#14F195]">Base Rewards</h3>
                     <p className="text-white/80 mb-4">Hold at least 100,000 tokens for 30 minutes to start earning:</p>
-                    <div className="bg-[#14F195]/10 rounded-lg p-4">
-                      <p className="text-white font-bold">0.00005 SOL per 100,000 tokens</p>
-                      <p className="text-white/60">Every 30 minutes (~0.01 USD)</p>
+                    <div className="space-y-4">
+                      <div className="bg-[#14F195]/10 rounded-lg p-4 border border-white/10">
+                        <p className="text-white font-bold">0.00005 SOL per 100,000 tokens</p>
+                        <p className="text-white/60">Every 30 minutes (~0.01 USD)</p>
+                      </div>
+                      <div className="bg-[#14F195]/10 rounded-lg p-4 border border-white/10">
+                        <p className="text-white font-bold">0.5 SOL total supply rewards</p>
+                        <p className="text-white/60">Every 30 minutes (~100 USD)</p>
+                      </div>
                     </div>
                   </div>
                   <div>
                     <h3 className="text-xl font-bold mb-4 text-[#14F195]">Time Multipliers</h3>
                     <ul className="space-y-3 text-white/80">
-                      <li className="flex items-center bg-[#14F195]/5 rounded p-2">
+                      <li className="flex items-center bg-[#14F195]/5 rounded p-2 border border-white/10">
                         <span className="w-24">4 hours:</span>
                         <span className="font-bold text-[#14F195]">1.2x</span>
                       </li>
-                      <li className="flex items-center bg-[#14F195]/5 rounded p-2">
+                      <li className="flex items-center bg-[#14F195]/5 rounded p-2 border border-white/10">
                         <span className="w-24">8 hours:</span>
                         <span className="font-bold text-[#14F195]">1.5x</span>
                       </li>
-                      <li className="flex items-center bg-[#14F195]/5 rounded p-2">
+                      <li className="flex items-center bg-[#14F195]/5 rounded p-2 border border-white/10">
                         <span className="w-24">16 hours:</span>
                         <span className="font-bold text-[#14F195]">1.8x</span>
                       </li>
-                      <li className="flex items-center bg-[#14F195]/5 rounded p-2">
+                      <li className="flex items-center bg-[#14F195]/5 rounded p-2 border border-white/10">
                         <span className="w-24">24 hours:</span>
                         <span className="font-bold text-[#14F195]">2.0x</span>
                       </li>
                     </ul>
                   </div>
                 </div>
+                <div className="flex justify-end mt-4">
+                  <a 
+                    href="#"
+                    className="bg-purple-900/40 hover:bg-purple-900/60 text-white/70 hover:text-white/90 px-4 py-2 rounded-lg text-sm transition-all flex items-center group font-sophie border-2 border-white/10 hover:border-white/20"
+                  >
+                    Check the math
+                    <ArrowRightCircle className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
+                  </a>
+                </div>
               </div>
             </div>
 
-            {/* Security Notice */}
-            <div className="mt-8 bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-[#9945FF]/20 relative overflow-hidden group hover:border-[#9945FF]/40 transition-all duration-300">
+            {/* Security Notice Card */}
+            <div className="mt-12 bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-[#9945FF]/20 relative overflow-hidden group hover:border-[#9945FF]/40 transition-all duration-300 flex flex-col min-h-[320px]">
+              <div className="absolute -top-4 -left-4 w-16 h-16 bg-[#14F195]/10 rounded-full flex items-center justify-center text-3xl font-bold text-[#14F195] transform -rotate-12">
+                <Shield className="w-8 h-8 text-[#14F195]" />
+              </div>
+              <div className="absolute -top-20 -right-8 w-80 h-80 bg-[#9945FF]/5 rounded-full flex items-center justify-center transform rotate-12 group-hover:rotate-6 transition-transform">
+                <Image
+                  src="/proof.png"
+                  alt="Proof"
+                  width={280}
+                  height={280}
+                  className="w-72 h-72 object-contain scale-110"
+                />
+              </div>
               <div className="absolute inset-0 bg-gradient-to-br from-[#9945FF]/30 via-purple-900/20 to-[#14F195]/30 animate-gradient-slow group-hover:from-[#9945FF]/40 group-hover:to-[#14F195]/40" />
-              <div className="relative z-10">
-                <h2 className="text-3xl font-bold mb-6 text-white flex items-center">
-                  <span className="text-2xl mr-2">⚠️</span> Security Notice
-                </h2>
-                <div className="bg-[#14F195]/10 rounded-lg p-6">
-                  <p className="text-white/90 font-medium">Only buy tokens using the official address announced on @solana-timer. Beware of fake tokens and always verify the contract address!</p>
+              <div className="relative z-10 flex-1 flex flex-col">
+                <h2 className="text-2xl font-bold mb-6 text-[#14F195] mt-8">Security Notice</h2>
+                <div className="max-w-[400px]">
+                  <div className="bg-[#14F195]/10 rounded-lg p-4 border border-white/10 mb-4">
+                    <p className="text-white/80">Only buy tokens using the official address announced on <a href="https://x.com/Solana_Timer" target="_blank" rel="noopener noreferrer" className="text-[#14F195] hover:text-[#14F195]/80">@Solana_Timer</a>. Beware of fake tokens and always verify the contract address!</p>
+                  </div>
+                </div>
+                <div className="flex justify-end mt-auto">
+                  <a 
+                    href="#"
+                    className="bg-purple-900/40 hover:bg-purple-900/60 text-white/70 hover:text-white/90 px-4 py-2 rounded-lg text-sm transition-all flex items-center group font-sophie border-2 border-white/10 hover:border-white/20"
+                  >
+                    Visit Gitbook
+                    <ArrowRightCircle className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
+                  </a>
                 </div>
               </div>
             </div>
