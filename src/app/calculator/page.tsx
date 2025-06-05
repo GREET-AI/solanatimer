@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { Calculator, ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowUp, ArrowDown } from "lucide-react";
 import { PublicKey } from "@solana/web3.js";
 
 interface TradeHistory {
@@ -78,7 +78,7 @@ export default function CalculatorPage() {
   };
 
   // Fetch wallet data
-  const fetchWalletData = async (address: string) => {
+  const fetchWalletData = async () => {
     setIsLoading(true);
     setError("");
     
@@ -123,7 +123,7 @@ export default function CalculatorPage() {
       const calculatedRewards = calculateRewards(mockData.balance, mockData.firstSeen);
       setRewards(calculatedRewards);
       
-    } catch (err) {
+    } catch {
       setError("Failed to fetch wallet data");
       setWalletData({
         balance: 0,
@@ -145,7 +145,7 @@ export default function CalculatorPage() {
     const isValid = validateSolanaAddress(address);
     
     if (isValid) {
-      fetchWalletData(address);
+      fetchWalletData();
     } else {
       setWalletData({
         balance: 0,
