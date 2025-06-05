@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Solana Timer",
-  description: "Time-based rewards on Solana",
+  description: "Time is money, money is time.",
 };
 
 export default function RootLayout({
