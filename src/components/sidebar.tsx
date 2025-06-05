@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Timer } from "lucide-react";
+import { GraduationCap, Timer, Function, Home, Info } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface SidebarProps {
@@ -13,16 +13,10 @@ interface SidebarProps {
 }
 
 const navigation = [
-  {
-    name: "How it Works?",
-    href: "/how-it-works",
-    icon: GraduationCap
-  },
-  {
-    name: "Timer",
-    href: "/timer",
-    icon: Timer
-  }
+  { name: "How it works?", href: "/", icon: Info },
+  { name: "Do the math", href: "/do-the-math", icon: Function },
+  { name: "Calculator", href: "/calculator", icon: Calculator },
+  { name: "Timer", href: "/timer", icon: Timer },
 ];
 
 function CountdownTimer() {
@@ -110,9 +104,10 @@ export function Sidebar({ className }: SidebarProps) {
 
           <nav className="space-y-2 mt-6">
             {navigation.map((item) => {
+              const Icon = item.icon;
               const isActive = pathname === item.href;
               return (
-                <Link key={item.href} href={item.href}>
+                <Link key={item.name} href={item.href}>
                   <Button 
                     variant="ghost" 
                     className={cn(
@@ -123,7 +118,7 @@ export function Sidebar({ className }: SidebarProps) {
                     )}
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-solana-purple/10 to-solana-green/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-gradient" />
-                    <item.icon className={cn(
+                    <Icon className={cn(
                       "h-6 w-6 transition-all duration-300 transform group-hover:scale-110",
                       isActive ? "text-white" : "text-white/70 group-hover:text-white"
                     )} />
