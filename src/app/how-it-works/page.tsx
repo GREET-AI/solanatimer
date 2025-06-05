@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Wallet, Timer, ArrowRightCircle, Shield } from 'lucide-react';
+import { ArrowRightCircle, Shield } from 'lucide-react';
 
 interface FloatingNumber {
   id: number;
