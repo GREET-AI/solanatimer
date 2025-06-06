@@ -12,14 +12,12 @@ export default function CalculatorPage() {
   // Handle address input
   const handleAddressChange = (address: string) => {
     setWalletAddress(address);
-    
     try {
       if (address) {
         new PublicKey(address);
       }
     } catch {}
-      {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#9945FF]/20 via-purple-900/10 to-[#14F195]/20 animate-gradient-slow" />
+  };
       
       <div className="relative z-10">
         {/* Hero Section */}
