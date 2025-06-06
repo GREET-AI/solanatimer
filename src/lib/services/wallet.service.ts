@@ -31,6 +31,12 @@ export interface WalletAnalysis {
   };
 }
 
+interface Transfer {
+  amount: string;
+  block: { timestamp: string };
+  transaction: { hash: string };
+}
+
 class WalletService {
   private connection: Connection;
   private TIMER_TOKEN_MINT = "3T721bpRc5FNY84W36vWffxoKs4FLXhBpSaqwUCRpump";
@@ -214,7 +220,7 @@ class WalletService {
       const data = await this.executeBitqueryQuery(query, variables);
       const transfers = data?.data?.solana?.transfers || [];
 
-      return transfers.map((transfer: any) => ({
+      return transfers.map((transfer: Transfer) => ({
         type: 'sell',
         amount: Number(transfer.amount),
         price: 0,

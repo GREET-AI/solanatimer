@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Connection, PublicKey } from '@solana/web3.js';
 
+interface DexscreenerToken {
+  baseToken?: {
+    address: string;
+    name?: string;
+    symbol?: string;
+  };
+  info?: {
+    imageUrl?: string;
+  };
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const address = searchParams.get('address');
@@ -45,7 +56,7 @@ export async function GET(req: NextRequest) {
 
     // Mappe die Dexscreener-Daten auf die Token-Liste
     const enrichedTokens = tokenList.map(token => {
-      const info = Array.isArray(data) ? data.find((d: any) => d.baseToken?.address === token.mint) : undefined;
+      const info = Array.isArray(data) ? (data.find((d: DexscreenerToken) => d.baseToken?.address === token.mint)) : undefined;
       return {
         ...token,
         name: info?.baseToken?.name || '',

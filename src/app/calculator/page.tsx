@@ -4,10 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { PublicKey } from "@solana/web3.js";
-import { walletService } from "@/lib/services/wallet.service";
-import { rewardService } from "@/lib/services/reward.service";
-import type { WalletAnalysis } from "@/lib/services/wallet.service";
-import type { RewardCalculation } from "@/lib/services/reward.service";
 import WalletAnalyzer from "@/components/WalletAnalyzer";
 
 export default function CalculatorPage() {

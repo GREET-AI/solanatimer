@@ -1,10 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Connection, PublicKey } from '@solana/web3.js';
 import Image from 'next/image';
-import { getRandomRPCEndpoint } from '@/config/endpoints';
-import { Metadata } from '@metaplex-foundation/mpl-token-metadata';
 
 interface TokenInfo {
     mint: string;
@@ -68,7 +65,7 @@ export default function WalletAnalyzer({ address }: { address: string }) {
                     <div key={token.mint} className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10 flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             {token.logo ? (
-                                <img
+                                <Image
                                     src={token.logo}
                                     alt={token.symbol || 'token'}
                                     width={40}
