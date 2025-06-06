@@ -17,7 +17,6 @@ export default function CalculatorPage() {
       if (address) {
         new PublicKey(address);
       }
-    } catch (error) {
       // setError("Invalid Solana address");
     }
   };
