@@ -8,22 +8,17 @@ import WalletAnalyzer from "@/components/WalletAnalyzer";
 
 export default function CalculatorPage() {
   const [walletAddress, setWalletAddress] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [analysis, setAnalysis] = useState<WalletAnalysis | null>(null);
-  const [rewards, setRewards] = useState<RewardCalculation | null>(null);
 
   // Handle address input
   const handleAddressChange = (address: string) => {
     setWalletAddress(address);
-    setError("");
     
     try {
       if (address) {
         new PublicKey(address);
       }
     } catch (error) {
-      setError("Invalid Solana address");
+      // setError("Invalid Solana address");
     }
   };
 
@@ -72,22 +67,22 @@ export default function CalculatorPage() {
                   placeholder="Enter your Solana wallet address"
                   className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#14F195]/50 font-mono text-sm"
                 />
-                {error && (
+                {/* {error && (
                   <p className="absolute -bottom-6 left-0 text-red-500 text-sm">
                     {error}
                   </p>
-                )}
+                )} */}
               </div>
             </div>
           </div>
         </div>
 
         {/* Results Section */}
-        {isLoading ? (
+        {/* {isLoading ? (
           <div className="flex justify-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#14F195]"></div>
           </div>
-        ) : analysis && rewards ? (
+        ) : analysis && rewards ? ( */}
           <div className="px-6 py-12">
             <div className="max-w-6xl mx-auto space-y-8">
               {/* Tier Badge */}
@@ -237,7 +232,7 @@ export default function CalculatorPage() {
               </div>
             </div>
           </div>
-        ) : null}
+        {/* ) : null} */}
 
         {walletAddress && !error && (
           <WalletAnalyzer address={walletAddress} />

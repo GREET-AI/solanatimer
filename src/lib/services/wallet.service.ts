@@ -116,7 +116,7 @@ class WalletService {
     }
   }
 
-  private async executeBitqueryQuery(query: string, variables: any) {
+  private async executeBitqueryQuery(query: string, variables: unknown) {
     try {
       if (!this.BITQUERY_API_KEY) {
         throw new Error("BITQUERY_API_KEY is not configured in environment variables");

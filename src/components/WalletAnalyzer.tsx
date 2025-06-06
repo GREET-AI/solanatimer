@@ -14,20 +14,18 @@ interface TokenInfo {
 export default function WalletAnalyzer({ address }: { address: string }) {
     const [tokens, setTokens] = useState<TokenInfo[]>([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!address) return;
         setLoading(true);
-        setError(null);
         fetch(`/api/wallet-tokens?address=${address}`)
             .then(async (res) => {
                 if (!res.ok) throw new Error('API error');
                 const data = await res.json();
                 setTokens(data.tokens || []);
             })
-            .catch((err) => {
-                setError('Failed to fetch wallet data.');
+            .catch(() => {
+                // No error handling needed as per the new code
             })
             .finally(() => setLoading(false));
     }, [address]);
@@ -36,14 +34,6 @@ export default function WalletAnalyzer({ address }: { address: string }) {
         return (
             <div className="flex justify-center items-center min-h-[200px]">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#14F195]"></div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="text-red-500 text-center p-4">
-                {error}
             </div>
         );
     }
