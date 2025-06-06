@@ -18,7 +18,8 @@ export default function CalculatorPage() {
       }
     } catch {}
   };
-      
+  
+  return (    
       <div className="relative z-10">
         {/* Hero Section */}
         <div className="pt-20 px-6">
