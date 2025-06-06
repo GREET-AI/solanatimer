@@ -19,7 +19,7 @@ export default function CalculatorPage() {
       }
       // setError("Invalid Solana address");
     }
-  };
+  };;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black">
