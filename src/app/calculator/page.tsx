@@ -17,12 +17,7 @@ export default function CalculatorPage() {
       if (address) {
         new PublicKey(address);
       }
-      // setError("Invalid Solana address");
-    }
-  };;
-
-  return (
-    <div className="relative min-h-screen overflow-hidden bg-black">
+    } catch {}
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#9945FF]/20 via-purple-900/10 to-[#14F195]/20 animate-gradient-slow" />
       
