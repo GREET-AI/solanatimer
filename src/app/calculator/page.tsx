@@ -234,8 +234,8 @@ export default function CalculatorPage() {
           </div>
         {/* ) : null} */}
 
-        {walletAddress && !error && (
-          <WalletAnalyzer address={walletAddress} />
+        {walletAddress && (
+            <WalletAnalyzer address={walletAddress} />
         )}
       </div>
     </div>
