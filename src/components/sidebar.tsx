@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Calculator, Timer, FunctionSquare, Info } from "lucide-react";
+import { Calculator, Timer, FunctionSquare, Info, Shield } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface SidebarProps {
@@ -17,6 +17,7 @@ const navigation = [
   { name: "Do the math", href: "/do-the-math", icon: FunctionSquare },
   { name: "Calculator", href: "/calculator", icon: Calculator },
   { name: "Timer", href: "/timer", icon: Timer },
+  { name: "Reward Proof", href: "/rewards-proof", icon: Shield },
 ];
 
 function getNextHalfHourCountdown() {
@@ -34,6 +35,7 @@ function getNextHalfHourCountdown() {
 }
 
 function CountdownTimer() {
+  if (typeof window === 'undefined') return null;
   const [timeLeft, setTimeLeft] = useState(getNextHalfHourCountdown());
 
   useEffect(() => {
