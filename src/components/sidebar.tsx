@@ -19,32 +19,27 @@ const navigation = [
   { name: "Timer", href: "/timer", icon: Timer },
 ];
 
+function getNextHalfHourCountdown() {
+  const now = new Date();
+  const next = new Date(now);
+  if (now.getMinutes() < 30) {
+    next.setMinutes(30, 0, 0);
+  } else {
+    next.setHours(now.getHours() + 1, 0, 0, 0);
+  }
+  const diff = next.getTime() - now.getTime();
+  const minutes = Math.floor(diff / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
+  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
 function CountdownTimer() {
-  const [timeLeft, setTimeLeft] = useState('');
+  const [timeLeft, setTimeLeft] = useState(getNextHalfHourCountdown());
 
   useEffect(() => {
-    const calculateTimeLeft = () => {
-      const now = new Date();
-      const nextHour = new Date(now);
-      nextHour.setHours(nextHour.getHours() + 1);
-      nextHour.setMinutes(0);
-      nextHour.setSeconds(0);
-      nextHour.setMilliseconds(0);
-
-      const difference = nextHour.getTime() - now.getTime();
-      
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-      return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    };
-
-    setTimeLeft(calculateTimeLeft());
-
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
+      setTimeLeft(getNextHalfHourCountdown());
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 

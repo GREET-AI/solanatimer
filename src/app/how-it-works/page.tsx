@@ -301,7 +301,7 @@ export default function HowItWorks() {
                     </li>
                     <li className="flex items-start">
                       <ArrowRightCircle className="w-4 h-4 mr-2 mt-0.5 text-[#14F195]" />
-                      <span>Need ~1 SOL for 100k tokens</span>
+                      <span>We recommend buying 1–5 SOL to get started and cover fees.</span>
                     </li>
                   </ul>
                   <div className="flex justify-end mt-4">
@@ -386,52 +386,77 @@ export default function HowItWorks() {
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-br from-[#9945FF]/30 via-purple-900/20 to-[#14F195]/30 animate-gradient-slow group-hover:from-[#9945FF]/40 group-hover:to-[#14F195]/40" />
-              <div className="relative z-10 flex-1 flex flex-col">
-                <h2 className="text-2xl font-bold mb-6 text-[#14F195] mt-8">Reward System</h2>
+              <div className="relative z-10 flex-1 flex flex-col gap-8">
+                <h2 className="text-2xl font-bold mb-2 text-[#14F195] mt-8">Reward System</h2>
                 <div className="grid md:grid-cols-2 gap-8 mb-auto">
-                  <div>
-                    <h3 className="text-xl font-bold mb-4 text-[#14F195]">Base Rewards</h3>
-                    <p className="text-white/80 mb-4">Hold at least 100,000 tokens for 30 minutes to start earning:</p>
-                    <div className="space-y-4">
-                      <div className="bg-[#14F195]/10 rounded-lg p-4 border border-white/10">
-                        <p className="text-white font-bold">0.00005 SOL per 100,000 tokens</p>
-                        <p className="text-white/60">Every 30 minutes (~0.01 USD)</p>
-                      </div>
-                      <div className="bg-[#14F195]/10 rounded-lg p-4 border border-white/10">
-                        <p className="text-white font-bold">0.5 SOL total supply rewards</p>
-                        <p className="text-white/60">Every 30 minutes (~100 USD)</p>
-                      </div>
+                  <div className="flex flex-col gap-6">
+                    {/* How Rewards Work */}
+                    <div className="bg-white/5 border border-white/10 rounded-lg p-5">
+                      <h3 className="text-xl font-bold mb-2 text-[#14F195]">How Rewards Work</h3>
+                      <ul className="list-disc list-inside text-white/80 space-y-2 text-base mb-0">
+                        <li>Hold at least <span className="font-bold text-[#14F195]">100,000 TIMER</span> for 30 minutes to qualify.</li>
+                        <li>Every 30 minutes, 0.1% of all trading volume is collected as fees.</li>
+                        <li>50% of these fees are distributed to TIMER holders as SOL rewards.</li>
+                        <li>Rewards are paid out automatically every 30 minutes.</li>
+                      </ul>
+                    </div>
+                    {/* Example */}
+                    <div className="bg-[#14F195]/10 border border-white/10 rounded-lg p-5">
+                      <div className="font-bold text-white mb-1">Example</div>
+                      <div className="text-white/80 text-sm">Hold 1,000,000 TIMER for 24h with $300k daily volume:<br/>You&apos;d earn ~0.035 SOL per cycle (every 30 min) – and see it grow live!</div>
                     </div>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold mb-4 text-[#14F195]">Time Multipliers</h3>
-                    <ul className="space-y-3 text-white/80">
-                      <li className="flex items-center bg-[#14F195]/5 rounded p-2 border border-white/10">
-                        <span className="w-24">4 hours:</span>
-                        <span className="font-bold text-[#14F195]">1.2x</span>
-                      </li>
-                      <li className="flex items-center bg-[#14F195]/5 rounded p-2 border border-white/10">
-                        <span className="w-24">8 hours:</span>
-                        <span className="font-bold text-[#14F195]">1.5x</span>
-                      </li>
-                      <li className="flex items-center bg-[#14F195]/5 rounded p-2 border border-white/10">
-                        <span className="w-24">16 hours:</span>
-                        <span className="font-bold text-[#14F195]">1.8x</span>
-                      </li>
-                      <li className="flex items-center bg-[#14F195]/5 rounded p-2 border border-white/10">
-                        <span className="w-24">24 hours:</span>
-                        <span className="font-bold text-[#14F195]">2.0x</span>
-                      </li>
-                    </ul>
+                  <div className="flex flex-col gap-6">
+                    {/* Multipliers */}
+                    <div className="bg-white/5 border border-white/10 rounded-lg p-5">
+                      <h3 className="text-xl font-bold mb-2 text-[#14F195]">Multipliers</h3>
+                      <div className="flex flex-col md:flex-row gap-4">
+                        <div>
+                          <div className="font-bold text-white mb-1">Token</div>
+                          <ul className="text-white/80 text-base space-y-1">
+                            <li>100k–500k: <span className="text-[#14F195]">1x</span> (Fish)</li>
+                            <li>500k–1M: <span className="text-[#14F195]">1.5x</span> (Crab)</li>
+                            <li>1M–5M: <span className="text-[#14F195]">2x</span> (Dolphin)</li>
+                            <li>&gt;5M: <span className="text-[#14F195]">3x</span> (Whale)</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <div className="font-bold text-white mb-1">Time</div>
+                          <ul className="text-white/80 text-base space-y-1">
+                            <li>30min–1h: <span className="text-[#14F195]">1x</span></li>
+                            <li>1h–3h: <span className="text-[#14F195]">1.2x</span></li>
+                            <li>3h–24h: <span className="text-[#14F195]">1.5x</span></li>
+                            <li>&gt;24h: <span className="text-[#14F195]">2x</span></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Tiers */}
+                    <div className="bg-white/5 border border-white/10 rounded-lg p-5">
+                      <div className="font-bold text-white mb-2">Tiers</div>
+                      <ul className="text-white/80 text-base space-y-1">
+                        <li>&lt;100k: <span className="text-[#9945FF]">Shrimp</span> (no rewards)</li>
+                        <li>100k–500k: <span className="text-[#14F195]">Fish</span></li>
+                        <li>500k–1M: <span className="text-[#14F195]">Crab</span></li>
+                        <li>1M–5M: <span className="text-[#14F195]">Dolphin</span></li>
+                        <li>&gt;5M: <span className="text-[#14F195]">Whale</span></li>
+                      </ul>
+                    </div>
+                    {/* Live Rewards */}
+                    <div className="bg-[#9945FF]/10 border border-white/10 rounded-lg p-5">
+                      <div className="font-bold text-white mb-1">Live Rewards</div>
+                      <div className="text-white/80 text-sm">See your SOL rewards grow live in the app, with animated +SOL popups every few seconds. The more you hold, the faster it grows!</div>
+                    </div>
                   </div>
                 </div>
-                <div className="flex justify-end mt-4">
+                <div className="flex justify-end mt-8">
                   <a 
-                    href="#"
-                    className="bg-purple-900/40 hover:bg-purple-900/60 text-white/70 hover:text-white/90 px-4 py-2 rounded-lg text-sm transition-all flex items-center group font-sophie border-2 border-white/10 hover:border-white/20"
+                    href="/calculator"
+                    className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-6 py-2 rounded-lg text-base transition-all flex items-center group border-2 border-yellow-400 hover:border-yellow-300 shadow-lg relative overflow-hidden"
+                    style={{ minWidth: '160px' }}
                   >
-                    Check the math
-                    <ArrowRightCircle className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
+                    <span className="relative z-10">Do the math</span>
+                    <span className="absolute inset-0 rounded-lg pointer-events-none group-hover:animate-gloss" style={{background: 'linear-gradient(120deg,rgba(255,255,255,0.15) 0%,rgba(255,255,255,0.35) 50%,rgba(255,255,255,0.15) 100%)', opacity: 0.7}}></span>
                   </a>
                 </div>
               </div>

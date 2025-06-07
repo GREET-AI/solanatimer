@@ -1,26 +1,135 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { PublicKey } from "@solana/web3.js";
 import WalletAnalyzer from "@/components/WalletAnalyzer";
+import { TIMER_MINT } from '@/constants/timer';
+
+const SOL_PRICE = 200; // USD, anpassbar
+const FEE_PERCENT = 0.001; // 0,1%
+const REWARD_SHARE = 0.5; // 50%
+const REWARD_CYCLE_MINUTES = 30;
+
+const TOKEN_MULTIPLIERS = [
+  { min: 5_000_001, mult: 3 },
+  { min: 1_000_001, mult: 2 },
+  { min: 500_001, mult: 1.5 },
+  { min: 100_000, mult: 1 },
+];
+const TIME_MULTIPLIERS = [
+  { min: 24 * 60 + 1, mult: 2 },
+  { min: 3 * 60 + 1, mult: 1.5 },
+  { min: 60 + 1, mult: 1.2 },
+  { min: 30, mult: 1 },
+];
+
+const TIER_NAMES = [
+  { min: 5_000_001, name: "Whale" },
+  { min: 1_000_001, name: "Dolphin" },
+  { min: 500_001, name: "Crab" },
+  { min: 100_000, name: "Fish" },
+  { min: 0, name: "Shrimp" },
+];
+
+function getTokenMultiplier(tokens: number) {
+  for (const t of TOKEN_MULTIPLIERS) if (tokens >= t.min) return t.mult;
+  return 0;
+}
+function getTimeMultiplier(minutes: number) {
+  for (const t of TIME_MULTIPLIERS) if (minutes >= t.min) return t.mult;
+  return 0;
+}
+function getTierName(tokens: number) {
+  for (const t of TIER_NAMES) if (tokens >= t.min) return t.name;
+  return "Unknown";
+}
+
+// Typdefinitionen für Token und RewardInfo
+interface TokenData {
+  amount: number;
+  mint: string;
+}
+interface RewardInfo {
+  tokens: number;
+  holdTimeMinutes: number;
+  tier: string;
+  reward: number;
+}
 
 export default function CalculatorPage() {
   const [walletAddress, setWalletAddress] = useState("");
+  const [tokenData, setTokenData] = useState<TokenData | null>(null); // API-Daten für aktuelle Wallet
+  const [dailyVolumeUsd] = useState(300_000);
+  const [error, setError] = useState<string | null>(null);
+  const [rewardInfo, setRewardInfo] = useState<RewardInfo | null>(null);
+  const [simVolume, setSimVolume] = useState(0); // Default 0 USD
+  const [simHoldings, setSimHoldings] = useState(0); // Default 0 TIMER
 
-  // Handle address input
-  const handleAddressChange = (address: string) => {
-    setWalletAddress(address);
-    try {
-      if (address) {
-        new PublicKey(address);
-      }
-    } catch {}
+  // Fetch token holdings for the current wallet
+  useEffect(() => {
+    if (!walletAddress || error) return;
+    fetch(`/api/wallet-tokens?address=${walletAddress}`)
+      .then(async (res) => {
+        if (!res.ok) throw new Error('API error');
+        const data = await res.json();
+        // Finde den TIMER-Token
+        const timerToken = (data.tokens || []).find((t: TokenData) => t.mint === TIMER_MINT);
+        setTokenData(timerToken || null);
+      })
+      .catch(() => setTokenData(null));
+  }, [walletAddress, error]);
+
+  // Calculate reward and tier for the current wallet
+  useEffect(() => {
+    if (!tokenData || !tokenData.amount) {
+      setRewardInfo(null);
+      return;
+    }
+    // Simuliere Haltezeit (z.B. 24h für Demo)
+    const holdTimeMinutes = 24 * 60;
+    // Reward-Berechnung wie gehabt
+    const cyclesPerDay = (24 * 60) / REWARD_CYCLE_MINUTES;
+    const totalFees = dailyVolumeUsd * FEE_PERCENT;
+    const rewardPoolUsd = totalFees * REWARD_SHARE;
+    const rewardPoolSol = rewardPoolUsd / SOL_PRICE / cyclesPerDay;
+    const tokens = tokenData.amount;
+    const tokenMult = getTokenMultiplier(tokens);
+    const timeMult = getTimeMultiplier(holdTimeMinutes);
+    const reward = rewardPoolSol * tokenMult * timeMult;
+    setRewardInfo({
+      tokens,
+      holdTimeMinutes,
+      tier: getTierName(tokens),
+      reward: Number(reward.toFixed(6)),
+    });
+  }, [tokenData, dailyVolumeUsd]);
+
+  // Reward-Simulation für die Slider
+  const simHoldTimeMinutes = 24 * 60; // 24h als Beispiel
+  const simTokenMult = getTokenMultiplier(simHoldings);
+  const simTimeMult = getTimeMultiplier(simHoldTimeMinutes);
+  const cyclesPerDay = (24 * 60) / REWARD_CYCLE_MINUTES;
+  const simTotalFees = simVolume * FEE_PERCENT;
+  const simRewardPoolUsd = simTotalFees * REWARD_SHARE;
+  const simRewardPoolSol = simRewardPoolUsd / SOL_PRICE / cyclesPerDay;
+  const simRewardPerCycle = simRewardPoolSol * simTokenMult * simTimeMult;
+  const simRewardDaily = simRewardPerCycle * cyclesPerDay;
+  const simRewardMonthly = simRewardDaily * 30;
+  const simTier = getTierName(simHoldings);
+
+  // Error handling for address
+  const handleAnalyze = () => {
+    if (!walletAddress || walletAddress.length < 32) {
+      setError("Please enter a valid Solana address.");
+      setTokenData(null);
+      setRewardInfo(null);
+      return;
+    }
+    setError(null);
   };
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black">
-      {/* Hero Section */}
       <div className="pt-20 px-6">
         <div className="max-w-3xl mx-auto text-center space-y-8">
           <div className="relative w-32 h-32 mx-auto mb-8">
@@ -33,7 +142,6 @@ export default function CalculatorPage() {
               className="relative rounded-full"
             />
           </div>
-
           <div className="space-y-6">
             <h1 className="text-6xl font-bold tracking-tight relative">
               <span className="relative">
@@ -43,30 +151,98 @@ export default function CalculatorPage() {
                 </span>
               </span>
             </h1>
-            
             <p className="text-2xl text-white/70 max-w-2xl mx-auto leading-relaxed">
               Calculate your potential SOL rewards based on your holding patterns and market impact.
             </p>
           </div>
-
-          {/* Wallet Input */}
           <div className="max-w-2xl mx-auto">
-            <div className="relative">
+            <div className="relative flex gap-2">
               <input
                 type="text"
                 value={walletAddress}
-                onChange={(e) => handleAddressChange(e.target.value)}
+                onChange={(e) => setWalletAddress(e.target.value)}
                 placeholder="Enter your Solana wallet address"
                 className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#14F195]/50 font-mono text-sm"
               />
+              <button
+                className="bg-yellow-500 text-black font-bold px-6 py-2 rounded-lg hover:bg-yellow-400 transition"
+                onClick={handleAnalyze}
+              >
+                Start analysis
+              </button>
             </div>
+            {error && (
+              <p className="text-red-500 text-sm mt-2">{error}</p>
+            )}
           </div>
         </div>
       </div>
 
-      {walletAddress && (
-        <WalletAnalyzer address={walletAddress} />
+      {/* Übergib rewardInfo an WalletAnalyzer */}
+      {walletAddress && !error && (
+        <WalletAnalyzer
+          address={walletAddress}
+          rewardInfo={rewardInfo}
+        />
       )}
+
+      {/* Rewards Calculator Section */}
+      <div className="max-w-2xl mx-auto mt-16 mb-20 bg-white/5 border border-[#14F195]/20 rounded-lg p-8 shadow-lg">
+        <h2 className="text-2xl font-bold text-[#14F195] mb-6">Rewards Calculator</h2>
+        <div className="mb-8">
+          <label className="block text-white/80 mb-2 font-semibold">24h Volume (USD)</label>
+          <input
+            type="range"
+            min={0}
+            max={200000000}
+            step={10000}
+            value={simVolume}
+            onChange={e => setSimVolume(Number(e.target.value))}
+            className="w-full accent-[#14F195] h-2 rounded-lg appearance-none bg-[#14F195]/20"
+          />
+          <div className="flex justify-between text-xs text-white/60 mt-1">
+            <span>$0</span>
+            <span>${simVolume.toLocaleString()}</span>
+            <span>$200M</span>
+          </div>
+        </div>
+        <div className="mb-8">
+          <label className="block text-white/80 mb-2 font-semibold">Your TIMER Holdings</label>
+          <input
+            type="range"
+            min={0}
+            max={1000000000}
+            step={10000}
+            value={simHoldings}
+            onChange={e => setSimHoldings(Number(e.target.value))}
+            className="w-full accent-[#9945FF] h-2 rounded-lg appearance-none bg-[#9945FF]/20"
+          />
+          <div className="flex justify-between text-xs text-white/60 mt-1">
+            <span>0</span>
+            <span>{simHoldings.toLocaleString()} TIMER</span>
+            <span>1B</span>
+          </div>
+        </div>
+        <div className="grid md:grid-cols-2 gap-6 mt-8">
+          <div className="bg-black/40 border border-white/10 rounded-lg p-5 flex flex-col gap-2">
+            <div className="text-white/70 text-sm">Reward per cycle (30min)</div>
+            <div className="text-2xl font-bold text-[#14F195]">{simRewardPerCycle > 0 ? simRewardPerCycle.toFixed(6) : '0.000000'} SOL</div>
+            <div className="text-white/70 text-sm mt-2">Daily Rewards</div>
+            <div className="text-lg font-semibold text-[#14F195]">{simRewardDaily > 0 ? simRewardDaily.toFixed(4) : '0.0000'} SOL</div>
+            <div className="text-white/70 text-sm mt-2">Monthly Projection</div>
+            <div className="text-lg font-semibold text-[#14F195]">{simRewardMonthly > 0 ? simRewardMonthly.toFixed(2) : '0.00'} SOL</div>
+          </div>
+          <div className="bg-black/40 border border-white/10 rounded-lg p-5 flex flex-col gap-2">
+            <div className="text-white/70 text-sm">Tier</div>
+            <div className="text-xl font-bold text-[#9945FF]">{simTier}</div>
+            <div className="text-white/70 text-sm mt-2">Token Multiplier</div>
+            <div className="text-lg font-semibold text-[#14F195]">{simTokenMult}x</div>
+            <div className="text-white/70 text-sm mt-2">Time Multiplier (24h)</div>
+            <div className="text-lg font-semibold text-[#14F195]">{simTimeMult}x</div>
+          </div>
+        </div>
+        <div className="text-xs text-white/40 mt-6">* Calculations based on current trading volume</div>
+      </div>
     </div>
   );
 } 
