@@ -209,7 +209,7 @@ export default function CalculatorPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-black">
       {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#9945FF]/20 via-purple-900/10 to-[#14F195]/20 animate-gradient-slow" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#9945FF]/20 via-purple-900/10 to-[#14F195]/20 animate-gradient-slow pointer-events-none" />
       {/* Floating Formulas */}
       {floatingFormulas.map((formula) => (
         <div
