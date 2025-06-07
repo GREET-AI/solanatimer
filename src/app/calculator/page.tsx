@@ -56,6 +56,18 @@ interface RewardInfo {
   reward: number;
 }
 
+// Floating formula type
+interface FloatingFormula {
+  id: string;
+  value: string;
+  left: string;
+  top: string;
+  delay: string;
+  color: string;
+  size: string;
+  opacity: number;
+}
+
 export default function CalculatorPage() {
   const [walletAddress, setWalletAddress] = useState("");
   const [tokenData, setTokenData] = useState<TokenData | null>(null); // API-Daten für aktuelle Wallet
@@ -64,6 +76,8 @@ export default function CalculatorPage() {
   const [rewardInfo, setRewardInfo] = useState<RewardInfo | null>(null);
   const [simVolume, setSimVolume] = useState(0); // Default 0 USD
   const [simHoldings, setSimHoldings] = useState(0); // Default 0 TIMER
+  // Floating formulas state
+  const [floatingFormulas, setFloatingFormulas] = useState<FloatingFormula[]>([]);
 
   // Fetch token holdings for the current wallet
   useEffect(() => {
@@ -117,6 +131,70 @@ export default function CalculatorPage() {
   const simRewardMonthly = simRewardDaily * 30;
   const simTier = getTierName(simHoldings);
 
+  // Generate random mathematical formula
+  const generateRandomFormula = () => {
+    const formulas = [
+      "E = mc²",
+      "∑(n²) = n(n+1)(2n+1)/6",
+      "∫f(x)dx = F(x) + C",
+      "π = 3.14159265359",
+      "(x + y)² = x² + 2xy + y²",
+      "y = mx + b",
+      "a² + b² = c²",
+      "∞ → ∞",
+      "δy/δx = f'(x)",
+      "f'(x) = lim[h→0] [f(x+h) - f(x)]/h",
+      "∮ E·dl = -dΦB/dt",
+      "∇ × B = μ₀J + μ₀ε₀∂E/∂t",
+      "eiπ + 1 = 0",
+      "P(A|B) = P(B|A)P(A)/P(B)",
+      "F = G(m₁m₂)/r²",
+      "∇ · E = ρ/ε₀",
+      "dS ≥ 0",
+      "ψ(x,t) = Ae^(i(kx-ωt))",
+      "∫e^x dx = e^x + C",
+      "sin²θ + cos²θ = 1",
+      "∇²ψ + (2m/ℏ²)(E-V)ψ = 0",
+      "ds² = gμνdxᵘdxᵛ",
+      "R_μν - (R/2)g_μν = 8πGT_μν",
+      "[x,p] = iℏ",
+      "∂ψ/∂t = -(iℏ/2m)∇²ψ",
+      "S = k_B ln(W)",
+      "F = ma",
+      "E = hf",
+      "PV = nRT",
+      "dQ = TdS"
+    ];
+    return formulas[Math.floor(Math.random() * formulas.length)];
+  };
+
+  useEffect(() => {
+    // Generate floating formulas periodically
+    const generateFormula = () => {
+      const newFormula = {
+        id: `${Date.now()}-${Math.random()}`,
+        value: generateRandomFormula(),
+        left: `${Math.random() * 90 + 5}%`,
+        top: `${Math.random() * 90 + 5}%`,
+        delay: `${Math.random() * 1}s`,
+        color: Math.random() > 0.5 ? '#9945FF' : '#14F195',
+        size: `${Math.random() * 0.5 + 0.8}rem`,
+        opacity: Math.random() * 0.3 + 0.1
+      };
+      setFloatingFormulas(prev => [...prev, newFormula]);
+      setTimeout(() => {
+        setFloatingFormulas(prev => prev.filter(formula => formula.id !== newFormula.id));
+      }, 3000);
+    };
+    const interval = setInterval(generateFormula, 400);
+    for (let i = 0; i < 30; i++) {
+      generateFormula();
+    }
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   // Error handling for address
   const handleAnalyze = () => {
     if (!walletAddress || walletAddress.length < 32) {
@@ -130,6 +208,25 @@ export default function CalculatorPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black">
+      {/* Animated gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#9945FF]/20 via-purple-900/10 to-[#14F195]/20 animate-gradient-slow" />
+      {/* Floating Formulas */}
+      {floatingFormulas.map((formula) => (
+        <div
+          key={formula.id}
+          className="absolute animate-float-formula font-sophie"
+          style={{
+            left: formula.left,
+            top: formula.top,
+            animationDelay: formula.delay,
+            color: formula.color,
+            opacity: formula.opacity,
+            fontSize: formula.size
+          }}
+        >
+          {formula.value}
+        </div>
+      ))}
       <div className="pt-20 px-6">
         <div className="max-w-3xl mx-auto text-center space-y-8">
           <div className="relative w-32 h-32 mx-auto mb-8">
