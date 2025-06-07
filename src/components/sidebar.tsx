@@ -17,7 +17,6 @@ const navigation = [
   { name: "Do the math", href: "/do-the-math", icon: FunctionSquare },
   { name: "Calculator", href: "/calculator", icon: Calculator },
   { name: "Timer", href: "/timer", icon: Timer },
-  { name: "Reward Proof", href: "/rewards-proof", icon: Shield },
 ];
 
 function getNextHalfHourCountdown() {

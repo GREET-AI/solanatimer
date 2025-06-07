@@ -68,6 +68,14 @@ interface FloatingFormula {
   opacity: number;
 }
 
+// Hilfsfunktion für dynamische Schrittweite
+function getStep(value: number) {
+  if (value < 100_000) return 1_000;
+  if (value < 1_000_000) return 10_000;
+  if (value < 10_000_000) return 100_000;
+  return 1_000_000;
+}
+
 export default function CalculatorPage() {
   const [walletAddress, setWalletAddress] = useState("");
   const [tokenData, setTokenData] = useState<TokenData | null>(null); // API-Daten für aktuelle Wallet
@@ -288,15 +296,26 @@ export default function CalculatorPage() {
         <h2 className="text-2xl font-bold text-[#14F195] mb-6">Rewards Calculator</h2>
         <div className="mb-8">
           <label className="block text-white/80 mb-2 font-semibold">24h Volume (USD)</label>
-          <input
-            type="range"
-            min={0}
-            max={200000000}
-            step={10000}
-            value={simVolume}
-            onChange={e => setSimVolume(Number(e.target.value))}
-            className="w-full accent-[#14F195] h-2 rounded-lg appearance-none bg-[#14F195]/20"
-          />
+          <div className="flex gap-2 items-center">
+            <input
+              type="range"
+              min={0}
+              max={200000000}
+              step={getStep(simVolume)}
+              value={simVolume}
+              onChange={e => setSimVolume(Number(e.target.value))}
+              className="w-full accent-[#14F195] h-2 rounded-lg appearance-none bg-[#14F195]/20"
+            />
+            <input
+              type="number"
+              min={0}
+              max={200000000}
+              step={getStep(simVolume)}
+              value={simVolume}
+              onChange={e => setSimVolume(Number(e.target.value))}
+              className="w-32 bg-black/30 border border-white/10 rounded-lg px-2 py-1 text-white text-right font-mono text-sm"
+            />
+          </div>
           <div className="flex justify-between text-xs text-white/60 mt-1">
             <span>$0</span>
             <span>${simVolume.toLocaleString()}</span>
@@ -305,15 +324,26 @@ export default function CalculatorPage() {
         </div>
         <div className="mb-8">
           <label className="block text-white/80 mb-2 font-semibold">Your TIMER Holdings</label>
-          <input
-            type="range"
-            min={0}
-            max={1000000000}
-            step={10000}
-            value={simHoldings}
-            onChange={e => setSimHoldings(Number(e.target.value))}
-            className="w-full accent-[#9945FF] h-2 rounded-lg appearance-none bg-[#9945FF]/20"
-          />
+          <div className="flex gap-2 items-center">
+            <input
+              type="range"
+              min={0}
+              max={1000000000}
+              step={getStep(simHoldings)}
+              value={simHoldings}
+              onChange={e => setSimHoldings(Number(e.target.value))}
+              className="w-full accent-[#9945FF] h-2 rounded-lg appearance-none bg-[#9945FF]/20"
+            />
+            <input
+              type="number"
+              min={0}
+              max={1000000000}
+              step={getStep(simHoldings)}
+              value={simHoldings}
+              onChange={e => setSimHoldings(Number(e.target.value))}
+              className="w-32 bg-black/30 border border-white/10 rounded-lg px-2 py-1 text-white text-right font-mono text-sm"
+            />
+          </div>
           <div className="flex justify-between text-xs text-white/60 mt-1">
             <span>0</span>
             <span>{simHoldings.toLocaleString()} TIMER</span>
