@@ -22,6 +22,26 @@ interface FloatingLogo {
   opacity: string;
 }
 
+// 1. SVG-Icons für Tiers jetzt als Image-Komponenten
+const ShrimpIcon = () => (
+  <Image src="/shrimp.svg" alt="Shrimp" width={24} height={24} className="inline-block align-middle" />
+);
+const FishIcon = () => (
+  <Image src="/fish.svg" alt="Fish" width={24} height={24} className="inline-block align-middle" />
+);
+const CrabIcon = () => (
+  <Image src="/crab.svg" alt="Crab" width={24} height={24} className="inline-block align-middle" />
+);
+const DolphinIcon = () => (
+  <Image src="/dolphin.svg" alt="Dolphin" width={24} height={24} className="inline-block align-middle" />
+);
+const WhaleIcon = () => (
+  <Image src="/whale.svg" alt="Whale" width={24} height={24} className="inline-block align-middle" />
+);
+const TimeIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#14F195" strokeWidth="2" /><path d="M12 7v5l3 2" stroke="#14F195" strokeWidth="2" strokeLinecap="round" /></svg>
+);
+
 export default function HowItWorks() {
   const [particles, setParticles] = useState<Array<{ left: string; top: string; delay: string; color: string; size: string }>>([]);
   const [shootingStars, setShootingStars] = useState<Array<{ left: string; delay: string }>>([]);
@@ -393,7 +413,7 @@ export default function HowItWorks() {
                     {/* How Rewards Work */}
                     <div className="bg-white/5 border border-white/10 rounded-lg p-5">
                       <h3 className="text-xl font-bold mb-2 text-[#14F195]">How Rewards Work</h3>
-                      <ul className="list-disc list-inside text-white/80 space-y-2 text-base mb-0">
+                      <ul className="list-disc list-inside text-white/80 space-y-2 text-sm mb-0">
                         <li>Hold at least <span className="font-bold text-[#14F195]">100,000 TIMER</span> for 30 minutes to qualify.</li>
                         <li>Every 30 minutes, 0.1% of all trading volume is collected as fees.</li>
                         <li>50% of these fees are distributed to TIMER holders as SOL rewards.</li>
@@ -407,40 +427,34 @@ export default function HowItWorks() {
                     </div>
                   </div>
                   <div className="flex flex-col gap-6">
-                    {/* Multipliers */}
+                    {/* Multipliers als Chips/Bar-Chart */}
                     <div className="bg-white/5 border border-white/10 rounded-lg p-5">
-                      <h3 className="text-xl font-bold mb-2 text-[#14F195]">Multipliers</h3>
-                      <div className="flex flex-col md:flex-row gap-4">
-                        <div>
-                          <div className="font-bold text-white mb-1">Token</div>
-                          <ul className="text-white/80 text-base space-y-1">
-                            <li>100k–500k: <span className="text-[#14F195]">1x</span> (Fish)</li>
-                            <li>500k–1M: <span className="text-[#14F195]">1.5x</span> (Crab)</li>
-                            <li>1M–5M: <span className="text-[#14F195]">2x</span> (Dolphin)</li>
-                            <li>&gt;5M: <span className="text-[#14F195]">3x</span> (Whale)</li>
-                          </ul>
+                      <h3 className="text-lg font-bold mb-2 text-[#14F195]">Multipliers</h3>
+                      <div className="flex flex-col gap-3">
+                        <div className="flex gap-2 items-center">
+                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><FishIcon />1x</span>
+                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><CrabIcon />1.5x</span>
+                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><DolphinIcon />2x</span>
+                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><WhaleIcon />3x</span>
                         </div>
-                        <div>
-                          <div className="font-bold text-white mb-1">Time</div>
-                          <ul className="text-white/80 text-base space-y-1">
-                            <li>30min–1h: <span className="text-[#14F195]">1x</span></li>
-                            <li>1h–3h: <span className="text-[#14F195]">1.2x</span></li>
-                            <li>3h–24h: <span className="text-[#14F195]">1.5x</span></li>
-                            <li>&gt;24h: <span className="text-[#14F195]">2x</span></li>
-                          </ul>
+                        <div className="flex gap-2 items-center">
+                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><TimeIcon />1x</span>
+                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><TimeIcon />1.2x</span>
+                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><TimeIcon />1.5x</span>
+                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><TimeIcon />2x</span>
                         </div>
                       </div>
                     </div>
-                    {/* Tiers */}
+                    {/* Tiers als Chips */}
                     <div className="bg-white/5 border border-white/10 rounded-lg p-5">
                       <div className="font-bold text-white mb-2">Tiers</div>
-                      <ul className="text-white/80 text-base space-y-1">
-                        <li>&lt;100k: <span className="text-[#9945FF]">Shrimp</span> (no rewards)</li>
-                        <li>100k–500k: <span className="text-[#14F195]">Fish</span></li>
-                        <li>500k–1M: <span className="text-[#14F195]">Crab</span></li>
-                        <li>1M–5M: <span className="text-[#14F195]">Dolphin</span></li>
-                        <li>&gt;5M: <span className="text-[#14F195]">Whale</span></li>
-                      </ul>
+                      <div className="flex gap-2 flex-wrap">
+                        <span className="flex items-center gap-1 bg-[#9945FF]/10 border border-[#9945FF]/30 rounded-full px-3 py-1 text-xs text-[#9945FF] font-medium"><ShrimpIcon />Shrimp</span>
+                        <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-[#14F195] font-medium"><FishIcon />Fish</span>
+                        <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-[#14F195] font-medium"><CrabIcon />Crab</span>
+                        <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-[#14F195] font-medium"><DolphinIcon />Dolphin</span>
+                        <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-[#14F195] font-medium"><WhaleIcon />Whale</span>
+                      </div>
                     </div>
                     {/* Live Rewards */}
                     <div className="bg-[#9945FF]/10 border border-white/10 rounded-lg p-5">
@@ -452,10 +466,11 @@ export default function HowItWorks() {
                 <div className="flex justify-end mt-8">
                   <a 
                     href="/calculator"
-                    className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-6 py-2 rounded-lg text-base transition-all flex items-center group border-2 border-yellow-400 hover:border-yellow-300 shadow-lg relative overflow-hidden"
+                    className="bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold px-6 py-2 rounded-lg text-base transition-all flex items-center group border-2 border-black hover:border-[#9945FF] shadow-lg relative overflow-hidden"
                     style={{ minWidth: '160px' }}
                   >
                     <span className="relative z-10">Do the math</span>
+                    <ArrowRightCircle className="w-5 h-5 ml-2 text-black group-hover:text-[#9945FF] transition-colors" />
                     <span className="absolute inset-0 rounded-lg pointer-events-none group-hover:animate-gloss" style={{background: 'linear-gradient(120deg,rgba(255,255,255,0.15) 0%,rgba(255,255,255,0.35) 50%,rgba(255,255,255,0.15) 100%)', opacity: 0.7}}></span>
                   </a>
                 </div>
