@@ -5,7 +5,6 @@ import Image from "next/image";
 import WalletAnalyzer from "@/components/WalletAnalyzer";
 import { TIMER_MINT } from '@/constants/timer';
 
-const SOL_PRICE = 200; // USD, anpassbar
 const FEE_PERCENT = 0.0005; // 0.05%
 const REWARD_SHARE = 1.0; // 100%
 const REWARD_CYCLE_MINUTES = 30;
@@ -93,6 +92,24 @@ interface AnalysisData {
   reward: number;
 }
 
+function useSolPrice() {
+  const [solPrice, setSolPrice] = useState(200);
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchPrice() {
+      try {
+        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd');
+        const data = await res.json();
+        if (isMounted && data.solana?.usd) setSolPrice(Number(data.solana.usd));
+      } catch {}
+    }
+    fetchPrice();
+    const interval = setInterval(fetchPrice, 60000);
+    return () => { isMounted = false; clearInterval(interval); };
+  }, []);
+  return solPrice;
+}
+
 export default function CalculatorPage() {
   const [walletAddress, setWalletAddress] = useState("");
   const [tokenData, setTokenData] = useState<TokenData | null>(null); // API-Daten für aktuelle Wallet
@@ -104,6 +121,7 @@ export default function CalculatorPage() {
   const [simHoldings, setSimHoldings] = useState(0); // Default 0 TIMER
   // Floating formulas state
   const [floatingFormulas, setFloatingFormulas] = useState<FloatingFormula[]>([]);
+  const solPrice = useSolPrice();
 
   // Fetch token holdings for the current wallet
   useEffect(() => {
@@ -139,7 +157,7 @@ export default function CalculatorPage() {
     const cyclesPerDay = (24 * 60) / REWARD_CYCLE_MINUTES;
     const totalFees = dailyVolumeUsd * FEE_PERCENT;
     const rewardPoolUsd = totalFees * REWARD_SHARE;
-    const rewardPoolSol = rewardPoolUsd / SOL_PRICE / cyclesPerDay;
+    const rewardPoolSol = rewardPoolUsd / solPrice / cyclesPerDay;
     const tokens = tokenData.amount;
     const tokenMult = getTokenMultiplier(tokens);
     const timeMult = getTimeMultiplier(holdTimeMinutes);
@@ -159,7 +177,7 @@ export default function CalculatorPage() {
   const cyclesPerDay = (24 * 60) / REWARD_CYCLE_MINUTES;
   const simTotalFees = simVolume * FEE_PERCENT;
   const simRewardPoolUsd = simTotalFees * REWARD_SHARE;
-  const simRewardPoolSol = simRewardPoolUsd / SOL_PRICE / cyclesPerDay;
+  const simRewardPoolSol = simRewardPoolUsd / solPrice / cyclesPerDay;
   const simRewardPerCycle = simRewardPoolSol * simTokenMult * simTimeMult;
   const simRewardDaily = simRewardPerCycle * cyclesPerDay;
   const simRewardMonthly = simRewardDaily * 30;
