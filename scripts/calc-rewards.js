@@ -3,7 +3,8 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 
 // === CONFIG ===
-const TOKEN_MINT = 'GNEFHjD8A5qxFrsS6hhMYhiMB6xXK4qydguNEPMLpump'; // <-- HIER DEINE TEST-CA EINTRAGEN
+const TOKEN_MINT = process.env.NEXT_PUBLIC_TIMER_MINT;
+if (!TOKEN_MINT) throw new Error('NEXT_PUBLIC_TIMER_MINT is not set in .env.local');
 const MIN_HOLD = 100_000;
 const REWARD_SHARE = 1.0;
 const FEE_PERCENT = 0.0005;
@@ -26,6 +27,33 @@ async function get24hVolume() {
   return 1000000; // 1 Mio USD
 }
 
+// === Helper: Prüfe Haltezeit ===
+async function heldForAtLeast(wallet, minAmount, minMinutes) {
+  // Hole die letzten 50 Transfers für diese Wallet und den Token
+  const url = `https://api.helius.xyz/v0/addresses/${wallet}/transactions?api-key=${HELIUS_KEY}`;
+  const res = await fetch(url);
+  if (!res.ok) return false;
+  const txs = await res.json();
+  // Finde die letzte Sell/Transfer, nach der der Kontostand >= minAmount war
+  let balance = 0;
+  let lastBelow = null;
+  for (let i = txs.length - 1; i >= 0; i--) {
+    const tx = txs[i];
+    if (!tx.tokenTransfers) continue;
+    for (const t of tx.tokenTransfers) {
+      if (t.mint === TOKEN_MINT && t.userAccount === wallet) {
+        balance += Number(t.tokenAmount) * (t.type === 'transfer' && t.fromUserAccount === wallet ? -1 : 1);
+        if (balance < minAmount) lastBelow = new Date(tx.timestamp * 1000);
+      }
+    }
+  }
+  // Wenn nie unter minAmount, dann seit Anfang eligible
+  const now = new Date();
+  const since = lastBelow ? lastBelow : new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+  const heldMinutes = (now - since) / 60000;
+  return heldMinutes >= minMinutes;
+}
+
 // === 3. Rewards berechnen ===
 async function calcRewards() {
   const holders = await getTokenHolders();
@@ -43,11 +71,16 @@ async function calcRewards() {
     return 0;
   }
 
-  const rewards = holders.map(h => ({
-    wallet: h.owner,
-    amount: Number((rewardPoolSol * getTokenMultiplier(h.amount)).toFixed(6)),
-    tokens: h.amount
-  }));
+  const rewards = [];
+  for (const h of holders) {
+    const eligible = await heldForAtLeast(h.owner, MIN_HOLD, 30);
+    if (!eligible) continue;
+    rewards.push({
+      wallet: h.owner,
+      amount: Number((rewardPoolSol * getTokenMultiplier(h.amount)).toFixed(6)),
+      tokens: h.amount
+    });
+  }
 
   fs.writeFileSync('public/rewards-latest.json', JSON.stringify({ rewards }, null, 2));
   console.log('Rewards-Liste gespeichert:', rewards);

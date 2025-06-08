@@ -484,8 +484,8 @@ export default function HowItWorks() {
                 </div>
                 <div className="flex justify-end mt-8">
                   <a 
-                    href="/calculator"
-                    className="bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold px-6 py-2 rounded-lg text-base transition-all flex items-center group border-2 border-black hover:border-[#9945FF] shadow-lg relative overflow-hidden"
+                    href="/do-the-math"
+                    className="bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold px-6 py-2 rounded-lg text-base transition-all flex items-center group border-2 border-black hover:border-[#9945FF] shadow-lg relative overflow-hidden font-sophie"
                     style={{ minWidth: '160px' }}
                   >
                     <span className="relative z-10">Do the math</span>

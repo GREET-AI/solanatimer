@@ -16,8 +16,8 @@ export default function ProofModal({ open, onClose, children }: { open: boolean;
 
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in py-4 md:py-12">
-      <div className="relative w-full max-w-3xl mx-auto bg-black rounded-2xl shadow-2xl border border-[#14F195]/30 p-0 overflow-hidden animate-pop-in max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in py-4 md:py-12" onClick={onClose}>
+      <div className="relative w-full max-w-3xl mx-auto bg-black rounded-2xl shadow-2xl border border-[#14F195]/30 p-0 overflow-hidden animate-pop-in max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
         <button
           className="absolute top-4 right-4 z-10 bg-gradient-to-br from-[#9945FF] to-[#14F195] rounded-full w-12 h-12 flex items-center justify-center hover:scale-110 transition-transform border-2 border-black/40 hover:border-[#9945FF]"
           aria-label="Close Proof Modal"
