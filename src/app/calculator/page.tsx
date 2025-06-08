@@ -6,8 +6,8 @@ import WalletAnalyzer from "@/components/WalletAnalyzer";
 import { TIMER_MINT } from '@/constants/timer';
 
 const SOL_PRICE = 200; // USD, anpassbar
-const FEE_PERCENT = 0.001; // 0,1%
-const REWARD_SHARE = 0.5; // 50%
+const FEE_PERCENT = 0.0005; // 0.05%
+const REWARD_SHARE = 1.0; // 100%
 const REWARD_CYCLE_MINUTES = 30;
 
 const TOKEN_MULTIPLIERS = [
@@ -48,6 +48,7 @@ function getTierName(tokens: number) {
 interface TokenData {
   amount: number;
   mint: string;
+  name?: string;
 }
 interface RewardInfo {
   tokens: number;
@@ -76,12 +77,29 @@ function getStep(value: number) {
   return 1_000_000;
 }
 
+// SVG-Icons für die Tiers
+const TIER_ICONS: Record<string, string> = {
+  Whale: '/whale.svg',
+  Dolphin: '/dolphin.svg',
+  Crab: '/crab.svg',
+  Fish: '/fish.svg',
+  Shrimp: '/shrimp.svg',
+};
+
+interface AnalysisData {
+  heldForMinutes: number;
+  volume24h: number;
+  tier: string;
+  reward: number;
+}
+
 export default function CalculatorPage() {
   const [walletAddress, setWalletAddress] = useState("");
   const [tokenData, setTokenData] = useState<TokenData | null>(null); // API-Daten für aktuelle Wallet
-  const [dailyVolumeUsd] = useState(300_000);
+  const [analysis, setAnalysis] = useState<AnalysisData | null>(null); // Analyse-Daten von neuer API
+  const [dailyVolumeUsd, setDailyVolumeUsd] = useState<number | null>(null); // Jetzt dynamisch!
   const [error, setError] = useState<string | null>(null);
-  const [rewardInfo, setRewardInfo] = useState<RewardInfo | null>(null);
+  const [tokenName, setTokenName] = useState("TIMER");
   const [simVolume, setSimVolume] = useState(0); // Default 0 USD
   const [simHoldings, setSimHoldings] = useState(0); // Default 0 TIMER
   // Floating formulas state
@@ -90,26 +108,34 @@ export default function CalculatorPage() {
   // Fetch token holdings for the current wallet
   useEffect(() => {
     if (!walletAddress || error) return;
+    // Hole Token-Metadaten wie bisher
     fetch(`/api/wallet-tokens?address=${walletAddress}`)
       .then(async (res) => {
         if (!res.ok) throw new Error('API error');
         const data = await res.json();
-        // Finde den TIMER-Token
         const timerToken = (data.tokens || []).find((t: TokenData) => t.mint === TIMER_MINT);
         setTokenData(timerToken || null);
+        setTokenName(timerToken?.name || "TIMER");
       })
       .catch(() => setTokenData(null));
+    // Hole Analyse-Daten (Tier, Reward, Haltezeit, Volumen)
+    fetch(`/api/wallet-analysis?address=${walletAddress}`)
+      .then(async (res) => {
+        if (!res.ok) throw new Error('API error');
+        const data = await res.json();
+        setAnalysis(data);
+        if (typeof data.volume24h === 'number') setDailyVolumeUsd(data.volume24h);
+      })
+      .catch(() => {
+        setAnalysis(null);
+        setDailyVolumeUsd(null);
+      });
   }, [walletAddress, error]);
 
-  // Calculate reward and tier for the current wallet
-  useEffect(() => {
-    if (!tokenData || !tokenData.amount) {
-      setRewardInfo(null);
-      return;
-    }
-    // Simuliere Haltezeit (z.B. 24h für Demo)
-    const holdTimeMinutes = 24 * 60;
-    // Reward-Berechnung wie gehabt
+  // Calculate reward and tier for the current wallet (keine Endlosschleife mehr!)
+  let rewardInfo: RewardInfo | null = null;
+  if (tokenData && tokenData.amount && dailyVolumeUsd !== null && analysis) {
+    const holdTimeMinutes = analysis.heldForMinutes ?? 0;
     const cyclesPerDay = (24 * 60) / REWARD_CYCLE_MINUTES;
     const totalFees = dailyVolumeUsd * FEE_PERCENT;
     const rewardPoolUsd = totalFees * REWARD_SHARE;
@@ -118,13 +144,13 @@ export default function CalculatorPage() {
     const tokenMult = getTokenMultiplier(tokens);
     const timeMult = getTimeMultiplier(holdTimeMinutes);
     const reward = rewardPoolSol * tokenMult * timeMult;
-    setRewardInfo({
+    rewardInfo = {
       tokens,
       holdTimeMinutes,
       tier: getTierName(tokens),
       reward: Number(reward.toFixed(6)),
-    });
-  }, [tokenData, dailyVolumeUsd]);
+    };
+  }
 
   // Reward-Simulation für die Slider
   const simHoldTimeMinutes = 24 * 60; // 24h als Beispiel
@@ -176,8 +202,8 @@ export default function CalculatorPage() {
     return formulas[Math.floor(Math.random() * formulas.length)];
   };
 
+  // Floating formulas Effekt: nur einmal beim Mount ausführen!
   useEffect(() => {
-    // Generate floating formulas periodically
     const generateFormula = () => {
       const newFormula = {
         id: `${Date.now()}-${Math.random()}`,
@@ -201,14 +227,14 @@ export default function CalculatorPage() {
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, []); // <--- WICHTIG: leeres Dependency-Array!
 
   // Error handling for address
   const handleAnalyze = () => {
     if (!walletAddress || walletAddress.length < 32) {
       setError("Please enter a valid Solana address.");
       setTokenData(null);
-      setRewardInfo(null);
+      setAnalysis(null);
       return;
     }
     setError(null);
@@ -288,6 +314,7 @@ export default function CalculatorPage() {
         <WalletAnalyzer
           address={walletAddress}
           rewardInfo={rewardInfo}
+          tokenName={tokenName}
         />
       )}
 
@@ -361,7 +388,12 @@ export default function CalculatorPage() {
           </div>
           <div className="bg-black/40 border border-white/10 rounded-lg p-5 flex flex-col gap-2">
             <div className="text-white/70 text-sm">Tier</div>
-            <div className="text-xl font-bold text-[#9945FF]">{simTier}</div>
+            <div className="flex items-center gap-2">
+              {TIER_ICONS[simTier] && (
+                <Image src={TIER_ICONS[simTier]} alt={simTier} width={28} height={28} />
+              )}
+              <span className="text-xl font-bold text-[#9945FF]">{simTier}</span>
+            </div>
             <div className="text-white/70 text-sm mt-2">Token Multiplier</div>
             <div className="text-lg font-semibold text-[#14F195]">{simTokenMult}x</div>
             <div className="text-white/70 text-sm mt-2">Time Multiplier (24h)</div>

@@ -1,8 +1,8 @@
-import Link from "next/link";
+"use client";
 import { Shield } from "lucide-react";
 import { useState } from "react";
 import ProofModal from "@/components/ProofModal";
-import RewardsProofPage from "@/rewards-proof/ProofContent";
+import ProofContent from "@/app/rewards-proof/ProofContent";
 
 export default function FloatingProofButton() {
   const [open, setOpen] = useState(false);
@@ -17,7 +17,7 @@ export default function FloatingProofButton() {
         <Shield className="w-8 h-8 text-white drop-shadow-lg" />
       </button>
       <ProofModal open={open} onClose={() => setOpen(false)}>
-        <RewardsProofPage />
+        <ProofContent />
       </ProofModal>
     </>
   );

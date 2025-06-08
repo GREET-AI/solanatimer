@@ -18,6 +18,7 @@ interface WalletAnalyzerProps {
     tier: string;
     reward: number;
   } | null;
+  tokenName?: string;
 }
 
 interface TokenInfo {
@@ -28,7 +29,15 @@ interface TokenInfo {
     logo?: string;
 }
 
-export default function WalletAnalyzer({ address, rewardInfo }: WalletAnalyzerProps) {
+const TIER_ICONS: Record<string, string> = {
+  Whale: '/whale.svg',
+  Dolphin: '/dolphin.svg',
+  Crab: '/crab.svg',
+  Fish: '/fish.svg',
+  Shrimp: '/shrimp.svg',
+};
+
+export default function WalletAnalyzer({ address, rewardInfo, tokenName = "TIMER" }: WalletAnalyzerProps) {
     const [tokens, setTokens] = useState<TokenInfo[]>([]);
     const [loading, setLoading] = useState(false);
     const [liveReward, setLiveReward] = useState(0);
@@ -54,7 +63,7 @@ export default function WalletAnalyzer({ address, rewardInfo }: WalletAnalyzerPr
 
     // Live-Reward-Refresh
     useEffect(() => {
-        if (!rewardInfo) {
+        if (!rewardInfo || !rewardInfo.reward) {
             setLiveReward(0);
             rewardRef.current = 0;
             return;
@@ -69,7 +78,7 @@ export default function WalletAnalyzer({ address, rewardInfo }: WalletAnalyzerPr
             setLiveReward(rewardRef.current);
         }, 1000);
         return () => clearInterval(interval);
-    }, [rewardInfo]);
+    }, [address, rewardInfo]);
 
     // Popup/Toast für Reward-Increment (realistisch)
     useEffect(() => {
@@ -112,7 +121,7 @@ export default function WalletAnalyzer({ address, rewardInfo }: WalletAnalyzerPr
                         <div className="text-4xl md:text-5xl font-extrabold text-yellow-300 drop-shadow-[0_0_16px_rgba(255,255,0,0.7)] animate-pulse-glow">
                             {tokens.find(t => t.mint === TIMER_MINT)?.amount?.toLocaleString() || '0'}
                         </div>
-                        <div className="uppercase text-yellow-400 font-bold tracking-widest text-sm mt-1 mb-2">TIMER</div>
+                        <div className="uppercase text-yellow-400 font-bold tracking-widest text-sm mt-1 mb-2">{tokenName}</div>
                     </div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -127,8 +136,8 @@ export default function WalletAnalyzer({ address, rewardInfo }: WalletAnalyzerPr
                                 />
                             </div>
                             <div>
-                                <h3 className="font-bold text-yellow-400">Solana Timer</h3>
-                                <p className="text-sm text-yellow-300/70">TIMER</p>
+                                <h3 className="font-bold text-yellow-400">Solana {tokenName}</h3>
+                                <p className="text-sm text-yellow-300/70">{tokenName}</p>
                             </div>
                         </div>
                         <div className="text-right">
@@ -141,51 +150,22 @@ export default function WalletAnalyzer({ address, rewardInfo }: WalletAnalyzerPr
                     </div>
                     {/* Reward Info */}
                     <div className="mt-4 pt-4 border-t border-yellow-400/20 flex flex-col md:flex-row md:justify-between md:items-center gap-2">
-                        <div>
-                            <p className="text-sm text-yellow-300/70">Current Tier</p>
-                            <p className="font-bold text-yellow-400">{rewardInfo?.tier || '-'}</p>
-                            <p className="text-sm text-yellow-300/70 mt-2">Held for</p>
-                            <p className="font-mono text-yellow-400">{rewardInfo?.holdTimeMinutes || '-'} min</p>
+                        <div className="flex items-center gap-2">
+                            {rewardInfo?.tier && TIER_ICONS[rewardInfo.tier] && (
+                              <Image src={TIER_ICONS[rewardInfo.tier]} alt={rewardInfo.tier} width={32} height={32} />
+                            )}
+                            <div>
+                                <p className="text-sm text-yellow-300/70">Current Tier</p>
+                                <p className="font-bold text-yellow-400 flex items-center gap-2">{rewardInfo?.tier || '-'}</p>
+                                <p className="text-sm text-yellow-300/70 mt-2">Held for</p>
+                                <p className="font-mono text-yellow-400">{rewardInfo?.holdTimeMinutes || '-'} min</p>
+                            </div>
                         </div>
                         <div className="text-right">
                             <p className="text-sm text-yellow-300/70">Reward per cycle</p>
                             <p className="font-bold text-yellow-400">{rewardInfo?.reward ? rewardInfo.reward + ' SOL' : '-'}</p>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            {/* Other Coin Holdings */}
-            <div className="max-w-2xl mx-auto px-2">
-                <h3 className="text-lg font-bold text-yellow-300 mb-4">Other Coin Holdings</h3>
-                <div className="grid gap-6">
-                    {tokens.filter(token => (token.name || token.symbol) && token.mint !== TIMER_MINT).map((token) => (
-                        <div key={token.mint} className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10 flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                {token.logo ? (
-                                    <Image
-                                        src={token.logo}
-                                        alt={token.symbol || 'token'}
-                                        width={40}
-                                        height={40}
-                                        className="rounded-full"
-                                    />
-                                ) : (
-                                    <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
-                                        <span className="text-xs">{token.symbol?.slice(0, 3) || '?'}</span>
-                                    </div>
-                                )}
-                                <div>
-                                    <h3 className="font-semibold">{token.name || token.symbol || 'Unknown Token'}</h3>
-                                    <p className="text-sm text-white/70">{token.symbol}</p>
-                                </div>
-                            </div>
-                            <div className="text-right">
-                                <span className="font-mono text-lg text-white/90">{token.amount}</span>
-                                <span className="block text-xs text-white/50 mt-1">Holdings</span>
-                            </div>
-                        </div>
-                    ))}
                 </div>
             </div>
         </div>

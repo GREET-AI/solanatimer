@@ -4,7 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { Sidebar } from "@/components/sidebar";
-import FloatingProofButton from "@/components/FloatingProofButton";
+import FloatingProofButtonClient from "@/components/FloatingProofButtonClient";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +18,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
   return (
     <html lang="en" suppressHydrationWarning className="bg-black">
       <body className={`${inter.className} bg-black min-h-screen`}>
@@ -30,7 +29,7 @@ export default function RootLayout({
                 {children}
               </main>
             </div>
-            {typeof window !== 'undefined' && pathname !== '/rewards-proof' && <FloatingProofButton />}
+            <FloatingProofButtonClient />
           </div>
           <Toaster />
         </ThemeProvider>

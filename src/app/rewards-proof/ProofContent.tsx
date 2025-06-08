@@ -1,3 +1,5 @@
+"use client";
+import React, { useState, useEffect } from "react";
 import Image from 'next/image';
 import { Shield } from 'lucide-react';
 
@@ -122,7 +124,7 @@ export default function ProofContent() {
                   <tr key={tx.hash} className="border-b border-white/10 hover:bg-[#14F195]/5 transition">
                     <td className="py-2 font-mono text-xs">{tx.hash}</td>
                     <td className="py-2 font-mono text-xs">{tx.recipient}</td>
-                    <td className="py-2 text-right font-bold text-[#14F195]">{tx.amount.toFixed(3)}</td>
+                    <td className="py-2 text-right font-bold text-[#14F195]">{Number(tx.amount).toFixed(3)}</td>
                     <td className="py-2 text-right font-mono text-xs">{new Date(tx.timestamp).toLocaleString()}</td>
                   </tr>
                 ))}

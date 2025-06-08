@@ -31,18 +31,108 @@ export interface WalletAnalysis {
   };
 }
 
-interface Transfer {
-  amount: string;
-  block: { timestamp: string };
-  transaction: { hash: string };
+interface AnalysisData {
+  heldForMinutes: number;
+  volume24h: number;
+  tier: string;
+  reward: number;
+}
+
+interface HeliusHolder {
+  owner: string;
+  amount: number;
+}
+
+interface HeliusTokenTransfer {
+  fromUserAccount: string;
+  owner: string;
+  tokenAmount: string;
+  timestamp: number;
+  signature: string;
+}
+
+// Caching für SOL-Preis (USD)
+let cachedSolPrice = 0;
+let lastSolPriceFetch = 0;
+async function getSolPrice(): Promise<number> {
+  const now = Date.now();
+  if (cachedSolPrice && now - lastSolPriceFetch < 60_000) {
+    return cachedSolPrice;
+  }
+  try {
+    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd';
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Coingecko API error');
+    const data = await res.json();
+    const price = data.solana?.usd;
+    if (price) {
+      cachedSolPrice = Number(price);
+      lastSolPriceFetch = now;
+      return cachedSolPrice;
+    }
+  } catch (e) {
+    console.error('Error fetching SOL price from Coingecko:', e);
+  }
+  // Fallback auf alten Wert oder 200
+  return cachedSolPrice || 200;
+}
+
+// Caching für 24h-Volumen
+let cachedVolume = 0;
+let lastVolumeFetch = 0;
+
+// Globales Caching für Helius-Requests
+const balanceCache: Record<string, { value: number, ts: number }> = {};
+const tradeCache: Record<string, { value: TradeHistory[], ts: number }> = {};
+
+// Caching für totalEligibleTokens (alle qualifizierten Holder)
+let cachedEligibleTokens = 0;
+let lastEligibleFetch = 0;
+async function getTotalEligibleTokens(mint: string, heliusKey: string): Promise<number> {
+  const now = Date.now();
+  if (cachedEligibleTokens && now - lastEligibleFetch < 60_000) {
+    return cachedEligibleTokens;
+  }
+  try {
+    const url = `https://api.helius.xyz/v0/tokens/holders?api-key=${heliusKey}&mint=${mint}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Helius API error');
+    const holders = await res.json() as HeliusHolder[];
+    const eligible = holders.filter(h => h.amount >= 100_000);
+    const total = eligible.reduce((sum, h) => sum + h.amount, 0);
+    cachedEligibleTokens = total;
+    lastEligibleFetch = now;
+    return total;
+  } catch (e) {
+    console.error('Error fetching eligible tokens:', e);
+    return cachedEligibleTokens || 0;
+  }
+}
+
+function getTierAndMult(tokens: number) {
+  if (tokens >= 10_000_000) return { tier: "Whale", mult: 1.5, icon: "/whale.svg" };
+  if (tokens >= 5_000_000)  return { tier: "Dolphin", mult: 1.3, icon: "/dolphin.svg" };
+  if (tokens >= 1_000_000)  return { tier: "Crab", mult: 1.2, icon: "/crab.svg" };
+  if (tokens >= 500_000)    return { tier: "Fish", mult: 1.1, icon: "/fish.svg" };
+  if (tokens >= 100_000)    return { tier: "Shrimp", mult: 1.0, icon: "/shrimp.svg" };
+  return { tier: "None", mult: 0, icon: "" };
+}
+
+function getTimeMult(minutesHeld: number) {
+  if (minutesHeld >= 24 * 60) return 1.5;
+  if (minutesHeld >= 12 * 60) return 1.4;
+  if (minutesHeld >= 4 * 60)  return 1.3;
+  if (minutesHeld >= 2 * 60)  return 1.2;
+  if (minutesHeld >= 60)      return 1.1;
+  if (minutesHeld >= 30)      return 1.0;
+  return 0;
 }
 
 class WalletService {
   private connection: Connection;
-  private TIMER_TOKEN_MINT = "3T721bpRc5FNY84W36vWffxoKs4FLXhBpSaqwUCRpump";
-  private PUMPSWAP_PROGRAM = "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA";
-  private BITQUERY_API_KEY = process.env.NEXT_PUBLIC_BITQUERY_API_KEY || "";
-  private BITQUERY_ENDPOINT = "https://graphql.bitquery.io";
+  private TIMER_TOKEN_MINT = process.env.NEXT_PUBLIC_TIMER_MINT || "3T721bpRc5FNY84W36vWffxoKs4FLXhBpSaqwUCRpump";
+  private HELIUS_API_KEY = process.env.HELIUS_PUBLIC_API_KEY || "";
+  private HELIUS_ENDPOINT = `https://api.helius.xyz/v0`;
   
   // Reward constants
   private readonly BASE_REWARD = 0.00005; // SOL per 100,000 tokens
@@ -60,10 +150,6 @@ class WalletService {
     this.connection = new Connection(
       process.env.NEXT_PUBLIC_SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com"
     );
-
-    if (!this.BITQUERY_API_KEY) {
-      console.warn("NEXT_PUBLIC_BITQUERY_API_KEY is not set in environment variables");
-    }
   }
 
   /**
@@ -78,37 +164,68 @@ class WalletService {
     }
   }
 
+  async get24hVolume(): Promise<number> {
+    const now = Date.now();
+    if (cachedVolume && now - lastVolumeFetch < 60_000) {
+      return cachedVolume;
+    }
+    try {
+      const url = `https://api.dexscreener.com/latest/dex/tokens/${this.TIMER_TOKEN_MINT}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Dexscreener API error');
+      const data = await res.json();
+      // Dexscreener liefert das Volumen in data.pairs[0].volume.h24
+      const volume = data.pairs?.[0]?.volume?.h24;
+      if (volume) {
+        cachedVolume = Number(volume);
+        lastVolumeFetch = now;
+        return cachedVolume;
+      }
+      return 0;
+    } catch (e) {
+      console.error('Error fetching 24h volume:', e);
+      return cachedVolume || 0;
+    }
+  }
+
   /**
    * Fetches complete wallet analysis including trading history and metrics
    */
-  public async analyzeWallet(address: string): Promise<WalletAnalysis> {
+  public async analyzeWallet(address: string): Promise<AnalysisData> {
     if (!this.isValidAddress(address)) {
       throw new Error("Invalid wallet address");
     }
 
     try {
-      const [timerBalance, trades] = await Promise.all([
+      const [timerBalance, trades, volume24h, solPrice, totalEligibleTokens] = await Promise.all([
         this.getTimerBalance(address),
-        this.getTradeHistory(address)
+        this.getTradeHistory(address),
+        this.get24hVolume(),
+        getSolPrice(),
+        getTotalEligibleTokens(this.TIMER_TOKEN_MINT, this.HELIUS_API_KEY)
       ]);
 
-      const firstSeen = this.calculateFirstSeen(trades);
-      const totalVolume = this.calculateTotalVolume(trades);
       const holdingMetrics = this.calculateHoldingMetrics(trades);
-      const nextReward = this.calculateNextReward(timerBalance, holdingMetrics.holdingTime);
+
+      // Neue Tier-Logik
+      const { tier, mult: tierMult } = getTierAndMult(timerBalance);
+      const holdTimeMinutes = holdingMetrics.holdingTime / 60000;
+      const timeMult = getTimeMult(holdTimeMinutes);
+
+      // Pool pro Zyklus (USD)
+      const poolPerCycleUSD = (volume24h * 0.0005) / 48;
+      // Token-Anteil
+      const tokenShare = totalEligibleTokens > 0 ? timerBalance / totalEligibleTokens : 0;
+      // Reward pro Holder (USD)
+      const rewardUSD = poolPerCycleUSD * tokenShare * timeMult * tierMult;
+      // In SOL umrechnen
+      const reward = solPrice > 0 ? rewardUSD / solPrice : 0;
 
       return {
-        address,
-        timerBalance,
-        firstSeen,
-        lastActive: trades.length > 0 
-          ? new Date(Math.max(...trades.map(t => t.timestamp.getTime())))
-          : new Date(),
-        trades,
-        totalVolume,
-        averageHoldingTime: holdingMetrics.averageHoldingTime,
-        holdingScore: holdingMetrics.holdingScore,
-        nextReward
+        heldForMinutes: holdingMetrics.holdingTime / 60000,
+        volume24h,
+        tier,
+        reward: Number(reward.toFixed(6))
       };
     } catch (error) {
       console.error("Error analyzing wallet:", error);
@@ -116,120 +233,73 @@ class WalletService {
     }
   }
 
-  private async executeBitqueryQuery(query: string, variables: unknown) {
-    try {
-      if (!this.BITQUERY_API_KEY) {
-        throw new Error("BITQUERY_API_KEY is not configured in environment variables");
-      }
-
-      const response = await fetch(this.BITQUERY_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.BITQUERY_API_KEY}`,
-        },
-        body: JSON.stringify({
-          query,
-          variables
-        })
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Bitquery API error:', {
-          status: response.status,
-          statusText: response.statusText,
-          error: errorText
-        });
-        throw new Error(`API request failed: ${errorText}`);
-      }
-
-      const data = await response.json();
-      
-      if (data.errors) {
-        console.error('GraphQL errors:', data.errors);
-        throw new Error(data.errors[0].message);
-      }
-
-      return data;
-    } catch (error) {
-      console.error('Query execution error:', error);
-      throw error;
-    }
-  }
-
   /**
-   * Fetches Timer token balance for a wallet
+   * Fetches Timer token balance for a wallet using Helius (mit Caching und 429-Handling)
    */
   private async getTimerBalance(address: string): Promise<number> {
+    const now = Date.now();
+    if (balanceCache[address] && now - balanceCache[address].ts < 60_000) {
+      return balanceCache[address].value;
+    }
     try {
-      const query = `
-        query ($address: String!) {
-          solana {
-            transfers(
-              receiver: {is: $address}
-              currency: {is: "${this.TIMER_TOKEN_MINT}"}
-            ) {
-              amount
-            }
-          }
-        }
-      `;
-
-      const variables = {
-        address
-      };
-
-      const data = await this.executeBitqueryQuery(query, variables);
-      const transfer = data?.data?.solana?.transfers?.[0];
-      return transfer ? Number(transfer.amount) : 0;
+      const url = `${this.HELIUS_ENDPOINT}/addresses/${address}/balances?api-key=${this.HELIUS_API_KEY}`;
+      const res = await fetch(url);
+      if (res.status === 429) {
+        console.error('Helius rate limit (balance)');
+        throw new Error('Rate limit exceeded, try again later');
+      }
+      if (!res.ok) throw new Error('Helius API error');
+      const data = await res.json();
+      const token = (data.tokens || []).find((t: { mint: string }) => t.mint === this.TIMER_TOKEN_MINT);
+      const value = token ? Number(token.amount) : 0;
+      balanceCache[address] = { value, ts: now };
+      return value;
     } catch (error) {
-      console.error("Error fetching Timer balance:", error);
-      return 0;
+      if (error instanceof Error && error.message.includes('Rate limit')) throw error;
+      console.error("Error fetching Timer balance (Helius):", error);
+      return balanceCache[address]?.value || 0;
     }
   }
 
   /**
-   * Fetches trading history for a wallet
+   * Fetches trading history for a wallet using Helius (mit Caching und 429-Handling)
    */
   private async getTradeHistory(address: string): Promise<TradeHistory[]> {
+    const now = Date.now();
+    if (tradeCache[address] && now - tradeCache[address].ts < 60_000) {
+      return tradeCache[address].value;
+    }
     try {
-      const query = `
-        query ($address: String!) {
-          solana {
-            transfers(
-              currency: {is: "${this.TIMER_TOKEN_MINT}"}
-              sender: {is: $address}
-            ) {
-              amount
-              block {
-                timestamp
-              }
-              transaction {
-                hash
-              }
-            }
+      const url = `${this.HELIUS_ENDPOINT}/addresses/${address}/transactions?api-key=${this.HELIUS_API_KEY}`;
+      const res = await fetch(url);
+      if (res.status === 429) {
+        console.error('Helius rate limit (trades)');
+        throw new Error('Rate limit exceeded, try again later');
+      }
+      if (!res.ok) throw new Error('Helius API error');
+      const data = await res.json();
+      // Filter for Timer token transfers
+      const trades: TradeHistory[] = [];
+      for (const tx of data) {
+        if (!tx.tokenTransfers) continue;
+        for (const transfer of tx.tokenTransfers) {
+          if (transfer.mint === this.TIMER_TOKEN_MINT) {
+            trades.push({
+              type: transfer.fromUserAccount === address ? 'sell' : 'buy',
+              amount: Number(transfer.tokenAmount),
+              price: 0, // Preis ggf. später ergänzen
+              timestamp: new Date(tx.timestamp * 1000),
+              txId: tx.signature
+            });
           }
         }
-      `;
-
-      const variables = {
-        address
-      };
-
-      const data = await this.executeBitqueryQuery(query, variables);
-      const transfers = data?.data?.solana?.transfers || [];
-
-      return transfers.map((transfer: Transfer) => ({
-        type: 'sell',
-        amount: Number(transfer.amount),
-        price: 0,
-        timestamp: new Date(transfer.block.timestamp),
-        txId: transfer.transaction.hash
-      }));
+      }
+      tradeCache[address] = { value: trades, ts: now };
+      return trades;
     } catch (error) {
-      console.error("Error fetching trade history:", error);
-      throw error;
+      if (error instanceof Error && error.message.includes('Rate limit')) throw error;
+      console.error("Error fetching trade history (Helius):", error);
+      return tradeCache[address]?.value || [];
     }
   }
 
@@ -360,6 +430,41 @@ class WalletService {
       timestamp: nextRewardTimestamp,
       multiplier
     };
+  }
+
+  // Neue Methode: Holder-Count über Helius
+  async getHolderCount(): Promise<number> {
+    try {
+      const url = `https://api.helius.xyz/v0/tokens/holders?api-key=${this.HELIUS_API_KEY}&mint=${this.TIMER_TOKEN_MINT}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Helius API error');
+      const holders = await res.json();
+      return Array.isArray(holders) ? holders.length : (holders?.result?.length || 0);
+    } catch (e) {
+      console.error('Error fetching holder count (Helius):', e);
+      return 0;
+    }
+  }
+
+  // Neue Methode: Letzte 5 Trades (Buy/Sell) für den Timer-Token
+  async getRecentTrades(): Promise<TradeHistory[]> {
+    try {
+      const url = `https://api.helius.xyz/v0/token-transfers?api-key=${this.HELIUS_API_KEY}&mint=${this.TIMER_TOKEN_MINT}&limit=5`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Helius API error');
+      const data = await res.json() as HeliusTokenTransfer[];
+      if (!Array.isArray(data)) return [];
+      return data.map(tx => ({
+        type: tx.fromUserAccount === tx.owner ? 'sell' : 'buy',
+        amount: Number(tx.tokenAmount),
+        price: 0,
+        timestamp: new Date(tx.timestamp * 1000),
+        txId: tx.signature
+      }));
+    } catch (e) {
+      console.error('Error fetching recent trades (Helius):', e);
+      return [];
+    }
   }
 }
 

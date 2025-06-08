@@ -414,16 +414,31 @@ export default function HowItWorks() {
                     <div className="bg-white/5 border border-white/10 rounded-lg p-5">
                       <h3 className="text-xl font-bold mb-2 text-[#14F195]">How Rewards Work</h3>
                       <ul className="list-disc list-inside text-white/80 space-y-2 text-sm mb-0">
-                        <li>Hold at least <span className="font-bold text-[#14F195]">100,000 TIMER</span> for 30 minutes to qualify.</li>
-                        <li>Every 30 minutes, 0.1% of all trading volume is collected as fees.</li>
-                        <li>50% of these fees are distributed to TIMER holders as SOL rewards.</li>
+                        <li>Every 30 minutes, <span className="font-bold">0.05% of all trading volume</span> is collected as fees.</li>
+                        <li><span className="font-bold">100% of these fees</span> are distributed to all eligible TIMER holders as SOL rewards.</li>
+                        <li>To qualify, you must hold at least <span className="font-bold text-[#14F195]">100,000 TIMER</span> for at least 30 minutes.</li>
+                        <li>Your reward per cycle is calculated as:<br/>
+                          <span className="font-mono text-xs text-white/70">(Your TIMER / All eligible TIMER) × Fee Pool × Tier Multiplier × Time Multiplier ÷ SOL Price</span>
+                        </li>
+                        <li>Both multipliers increase your rewards based on your holding size and holding duration.</li>
                         <li>Rewards are paid out automatically every 30 minutes.</li>
                       </ul>
                     </div>
                     {/* Example */}
                     <div className="bg-[#14F195]/10 border border-white/10 rounded-lg p-5">
                       <div className="font-bold text-white mb-1">Example</div>
-                      <div className="text-white/80 text-sm">Hold 1,000,000 TIMER for 24h with $300k daily volume:<br/>You&apos;d earn ~0.035 SOL per cycle (every 30 min) – and see it grow live!</div>
+                      <div className="text-white/80 text-sm">
+                        If you hold 200,000 TIMER for 4 hours and the daily trading volume is $50,000,000:<br/>
+                        <span className="font-mono text-xs text-white/70">
+                          - Your share: 200,000 / 100,000,000 = 0.2%<br/>
+                          - Fee pool per cycle: ($50,000,000 × 0.0005) / 48 ≈ $520.83<br/>
+                          - Tier Multiplier: 1.1x (Fish)<br/>
+                          - Time Multiplier: 1.3x (4h holding)<br/>
+                          - SOL price: $150<br/>
+                          → Reward: 520.83 × 0.002 × 1.1 × 1.3 / 150 ≈ <b>0.00993 SOL</b> per cycle<br/>
+                          → Daily: 0.00993 SOL × 48 cycles = <b>0.47664 SOL</b> ($71.50)
+                        </span>
+                      </div>
                     </div>
                   </div>
                   <div className="flex flex-col gap-6">
@@ -431,17 +446,21 @@ export default function HowItWorks() {
                     <div className="bg-white/5 border border-white/10 rounded-lg p-5">
                       <h3 className="text-lg font-bold mb-2 text-[#14F195]">Multipliers</h3>
                       <div className="flex flex-col gap-3">
-                        <div className="flex gap-2 items-center">
-                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><FishIcon />1x</span>
-                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><CrabIcon />1.5x</span>
-                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><DolphinIcon />2x</span>
-                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><WhaleIcon />3x</span>
+                        <div className="flex gap-2 items-center flex-wrap">
+                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><FishIcon />1.1x</span>
+                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><CrabIcon />1.2x</span>
+                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><DolphinIcon />1.3x</span>
+                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><WhaleIcon />1.5x</span>
                         </div>
-                        <div className="flex gap-2 items-center">
+                        <div className="flex gap-2 items-center flex-wrap">
                           <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><TimeIcon />1x</span>
+                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><TimeIcon />1.1x</span>
                           <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><TimeIcon />1.2x</span>
+                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><TimeIcon />1.3x</span>
+                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><TimeIcon />1.4x</span>
+                        </div>
+                        <div className="flex gap-2 items-center flex-wrap mt-1">
                           <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><TimeIcon />1.5x</span>
-                          <span className="flex items-center gap-1 bg-[#14F195]/10 border border-[#14F195]/30 rounded-full px-3 py-1 text-xs text-white font-medium"><TimeIcon />2x</span>
                         </div>
                       </div>
                     </div>
@@ -459,7 +478,7 @@ export default function HowItWorks() {
                     {/* Live Rewards */}
                     <div className="bg-[#9945FF]/10 border border-white/10 rounded-lg p-5">
                       <div className="font-bold text-white mb-1">Live Rewards</div>
-                      <div className="text-white/80 text-sm">See your SOL rewards grow live in the app, with animated +SOL popups every few seconds. The more you hold, the faster it grows!</div>
+                      <div className="text-white/80 text-sm">See your SOL rewards grow live in the app, with animated +SOL popups every few seconds. The more you hold and the longer you hold, the faster it grows!</div>
                     </div>
                   </div>
                 </div>

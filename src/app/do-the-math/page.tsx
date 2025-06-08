@@ -73,14 +73,14 @@ export default function DoTheMath() {
 
       setTimeout(() => {
         setFloatingFormulas(prev => prev.filter(formula => formula.id !== newFormula.id));
-      }, 4000);
+      }, 3000);
     };
 
     // Generate formulas more frequently
-    const interval = setInterval(generateFormula, 800);
+    const interval = setInterval(generateFormula, 400);
 
     // Initial set of formulas
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 30; i++) {
       generateFormula();
     }
 
@@ -165,35 +165,42 @@ export default function DoTheMath() {
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-br from-[#9945FF]/30 via-purple-900/20 to-[#14F195]/30 animate-gradient-slow group-hover:from-[#9945FF]/40 group-hover:to-[#14F195]/40" />
                 <div className="relative z-10 flex-1 flex flex-col">
-                  <h2 className="text-2xl font-bold mb-6 text-[#14F195] mt-8">Market Cap Multipliers</h2>
+                  <h2 className="text-2xl font-bold mb-6 text-[#14F195] mt-8">Reward Calculation</h2>
                   <div className="space-y-4 mb-auto">
                     <div className="bg-black/30 rounded-lg p-4 border border-white/10">
-                      <h3 className="text-lg font-semibold text-[#14F195] mb-2">Reward Calculation</h3>
+                      <h3 className="text-lg font-semibold text-[#14F195] mb-2">Reward per cycle (in SOL)</h3>
                       <pre className="text-sm font-mono bg-black/50 p-3 rounded overflow-x-auto">
-{`function calculateMarketMultiplier(
-  tokenBalance: number,
-  totalSupply: number
-): number {
-  // Calculate holder's share of total supply
-  const sharePercentage = 
-    tokenBalance / totalSupply;
-  
-  // Apply multiplier based on holding size
-  return BASE_MULTIPLIER * 
-    (1 + (sharePercentage * MARKET_BONUS));
-}`}
+{`// Reward per cycle (in SOL)
+const reward = (dailyVolumeUSD * 0.0005 / 48)
+  * (yourTokens / allEligibleTokens)
+  * timeMultiplier
+  * tierMultiplier
+  / solPrice;`}
                       </pre>
                       <p className="text-white/70 mt-3 text-sm">
-                        Your rewards increase based on your share of the total token supply.
+                        Your reward depends on your share of the pool, your holding duration, and your tier. Rewards are distributed every 30 minutes and all multipliers update live.
                       </p>
                     </div>
+                    <div className="bg-[#14F195]/10 border border-white/10 rounded-lg p-5 mt-6">
+                      <div className="font-bold text-white mb-1">Example</div>
+                      <div className="text-white/80 text-sm">
+                        If you hold 200,000 TIMER for 4 hours and the daily trading volume is $50,000,000:<br/>
+                        <span className="font-mono text-xs text-white/70">
+                          - Your share: 200,000 / 100,000,000 = 0.2%<br/>
+                          - Fee pool per cycle: ($50,000,000 × 0.0005) / 48 ≈ $520.83<br/>
+                          - Tier Multiplier: 1.1x (Fish)<br/>
+                          - Time Multiplier: 1.3x (4h holding)<br/>
+                          - SOL price: $150<br/>
+                          → Reward: 520.83 × 0.002 × 1.1 × 1.3 / 150 ≈ <b>0.00993 SOL</b> per cycle<br/>
+                          → Daily: 0.00993 SOL × 48 cycles = <b>0.47664 SOL</b> ($71.50)
+                        </span>
+                      </div>
+                    </div>
                     <div className="bg-[#14F195]/10 rounded-lg p-4 border border-white/10">
-                      <h3 className="text-lg font-semibold text-white mb-2">Distribution Details</h3>
+                      <h3 className="text-lg font-semibold text-white mb-2">Multipliers</h3>
                       <ul className="list-disc list-inside text-white/70 space-y-2 text-sm">
-                        <li>Pump.fun token tracking</li>
-                        <li>30-minute reward cycles</li>
-                        <li>Automatic balance checks</li>
-                        <li>Real-time multiplier updates</li>
+                        <li><b>Tier Multiplier:</b> Shrimp 1x (100k), Fish 1.1x (500k), Crab 1.2x (1M), Dolphin 1.3x (5M), Whale 1.5x (10M)</li>
+                        <li><b>Time Multiplier:</b> 30min 1x, 1h 1.1x, 2h 1.2x, 4h 1.3x, 12h 1.4x, 24h 1.5x</li>
                       </ul>
                     </div>
                   </div>

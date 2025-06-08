@@ -12,11 +12,30 @@ interface DexscreenerToken {
   };
 }
 
+interface TokenData {
+  amount: number;
+  mint: string;
+  name?: string;
+}
+
+interface DexscreenerResponse {
+  tokens: DexscreenerToken[];
+}
+
+// Globales Caching für Wallet-Tokens (pro Adresse, 60 Sekunden)
+const walletTokenCache: Record<string, { value: { tokens: TokenData[] }, ts: number }> = {};
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const address = searchParams.get('address');
   if (!address) {
     return NextResponse.json({ error: 'No address provided' }, { status: 400 });
+  }
+
+  // Caching-Check
+  const now = Date.now();
+  if (walletTokenCache[address] && now - walletTokenCache[address].ts < 60_000) {
+    return NextResponse.json(walletTokenCache[address].value);
   }
 
   try {
@@ -40,6 +59,7 @@ export async function GET(req: NextRequest) {
     console.log('[API] Token-Mints gefunden:', mints);
 
     if (mints.length === 0) {
+      walletTokenCache[address] = { value: { tokens: [] }, ts: now };
       return NextResponse.json({ tokens: [] });
     }
 
@@ -49,14 +69,15 @@ export async function GET(req: NextRequest) {
     const response = await fetch(url);
     if (!response.ok) {
       console.log('[API] Dexscreener Antwort nicht ok:', response.status);
+      walletTokenCache[address] = { value: { tokens: tokenList }, ts: now };
       return NextResponse.json({ tokens: tokenList });
     }
-    const data = await response.json();
+    const data = await response.json() as DexscreenerResponse;
     console.log('[API] Dexscreener Token-Daten:', JSON.stringify(data));
 
     // Mappe die Dexscreener-Daten auf die Token-Liste
     const enrichedTokens = tokenList.map(token => {
-      const info = Array.isArray(data) ? (data.find((d: DexscreenerToken) => d.baseToken?.address === token.mint)) : undefined;
+      const info = Array.isArray(data.tokens) ? (data.tokens.find((d: DexscreenerToken) => d.baseToken?.address === token.mint)) : undefined;
       return {
         ...token,
         name: info?.baseToken?.name || '',
@@ -65,9 +86,11 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    return NextResponse.json({ tokens: enrichedTokens });
+    const result = { tokens: enrichedTokens };
+    walletTokenCache[address] = { value: result, ts: now };
+    return NextResponse.json(result);
   } catch (err) {
     console.log('[API] Fehler:', err);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
-} 
+}

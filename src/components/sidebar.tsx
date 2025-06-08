@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Calculator, Timer, FunctionSquare, Info, Shield } from "lucide-react";
+import { Calculator, Timer, FunctionSquare, Info } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface SidebarProps {
@@ -34,15 +34,19 @@ function getNextHalfHourCountdown() {
 }
 
 function CountdownTimer() {
-  if (typeof window === 'undefined') return null;
-  const [timeLeft, setTimeLeft] = useState(getNextHalfHourCountdown());
+  const [mounted, setMounted] = useState(false);
+  const [timeLeft, setTimeLeft] = useState("");
 
   useEffect(() => {
+    setMounted(true);
+    setTimeLeft(getNextHalfHourCountdown());
     const timer = setInterval(() => {
       setTimeLeft(getNextHalfHourCountdown());
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="px-3 -mt-2 relative overflow-hidden text-center">
