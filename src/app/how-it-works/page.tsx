@@ -520,7 +520,9 @@ export default function HowItWorks() {
                 </div>
                 <div className="flex justify-end mt-auto">
                   <a 
-                    href="#"
+                    href="https://solana-timer.gitbook.io/solana-timer"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="bg-purple-900/40 hover:bg-purple-900/60 text-white/70 hover:text-white/90 px-4 py-2 rounded-lg text-sm transition-all flex items-center group font-sophie border-2 border-white/10 hover:border-white/20"
                   >
                     Visit Gitbook
