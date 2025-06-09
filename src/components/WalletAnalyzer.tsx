@@ -43,7 +43,7 @@ export default function WalletAnalyzer({ address, rewardInfo, tokenName = "TIMER
     const [showToast, setShowToast] = useState(false);
     const [toastValue, setToastValue] = useState(0);
     const popupInterval = 2; // seconds
-    // Current Live Rewards Counter: zählt jede Sekunde um rewardPerCycle/1800 hoch, bleibt stabil solange rewardPerCycle gleich bleibt
+    // Current Live Rewards Counter: steigt nur noch bei jedem Popup-Inkrement (alle 2 Sekunden)
     const rewardPerCycle = rewardInfo && Number(rewardInfo.reward) > 0 ? Number(rewardInfo.reward) : 0;
     const rewardPerSecond = rewardPerCycle / 1800;
     const [simLiveReward, setSimLiveReward] = useState(0);
@@ -63,36 +63,21 @@ export default function WalletAnalyzer({ address, rewardInfo, tokenName = "TIMER
             .finally(() => setLoading(false));
     }, [address, rewardPerCycle]);
 
-    // Live-Reward-Refresh als animierter Counter, der alle 30 Minuten resettet
+    // Popup/Toast für Reward-Increment (realistisch) + Counter-Sync
     useEffect(() => {
-        if (!rewardInfo || !rewardInfo.reward || Number(rewardInfo.reward) <= 0) {
+        if (!rewardInfo || rewardPerSecond <= 0) {
             setSimLiveReward(0);
             return;
         }
-        let start = Date.now();
-        const secondsPerCycle = 1800;
+        setSimLiveReward(0);
         const interval = setInterval(() => {
-            const secondsPassed = Math.floor((Date.now() - start) / 1000);
-            if (secondsPassed >= secondsPerCycle) {
-                start = Date.now();
-                setSimLiveReward(0);
-            } else {
-                setSimLiveReward(Number(((rewardPerCycle / secondsPerCycle) * secondsPassed).toFixed(6)));
-            }
-        }, 1000);
-        return () => clearInterval(interval);
-    }, [address, rewardInfo, rewardPerCycle]);
-
-    // Popup/Toast für Reward-Increment (realistisch)
-    useEffect(() => {
-        if (!rewardInfo) return;
-        const toastInterval = setInterval(() => {
             setToastValue(rewardPerSecond * popupInterval);
             setShowToast(true);
+            setSimLiveReward(prev => Number((prev + rewardPerSecond * popupInterval).toFixed(6)));
             setTimeout(() => setShowToast(false), 1200);
         }, popupInterval * 1000);
-        return () => clearInterval(toastInterval);
-    }, [rewardPerSecond, rewardPerCycle]);
+        return () => clearInterval(interval);
+    }, [rewardPerSecond, rewardPerCycle, rewardInfo]);
 
     if (loading) {
         return (

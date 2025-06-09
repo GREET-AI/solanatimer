@@ -98,9 +98,9 @@ function useSolPrice() {
     let isMounted = true;
     async function fetchPrice() {
       try {
-        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd');
+        const res = await fetch('/api/sol-price');
         const data = await res.json();
-        if (isMounted && data.solana?.usd) setSolPrice(Number(data.solana.usd));
+        if (isMounted && data.price) setSolPrice(Number(data.price));
       } catch {}
     }
     fetchPrice();
