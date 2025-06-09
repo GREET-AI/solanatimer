@@ -38,11 +38,6 @@ interface AnalysisData {
   reward: number;
 }
 
-interface HeliusHolder {
-  owner: string;
-  amount: number;
-}
-
 interface HeliusTokenTransfer {
   fromUserAccount: string;
   owner: string;
@@ -84,30 +79,6 @@ let lastVolumeFetch = 0;
 // Globales Caching für Helius-Requests
 const balanceCache: Record<string, { value: number, ts: number }> = {};
 const tradeCache: Record<string, { value: TradeHistory[], ts: number }> = {};
-
-// Caching für totalEligibleTokens (alle qualifizierten Holder)
-let cachedEligibleTokens = 0;
-let lastEligibleFetch = 0;
-async function getTotalEligibleTokens(mint: string, heliusKey: string): Promise<number> {
-  const now = Date.now();
-  if (cachedEligibleTokens && now - lastEligibleFetch < 60_000) {
-    return cachedEligibleTokens;
-  }
-  try {
-    const url = `https://api.helius.xyz/v0/tokens/holders?api-key=${heliusKey}&mint=${mint}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('Helius API error');
-    const holders = await res.json() as HeliusHolder[];
-    const eligible = holders.filter(h => h.amount >= 100_000);
-    const total = eligible.reduce((sum, h) => sum + h.amount, 0);
-    cachedEligibleTokens = total;
-    lastEligibleFetch = now;
-    return total;
-  } catch (e) {
-    console.error('Error fetching eligible tokens:', e);
-    return cachedEligibleTokens || 0;
-  }
-}
 
 function getTierAndMult(tokens: number) {
   if (tokens >= 10_000_000) return { tier: "Whale", mult: 1.5, icon: "/whale.svg" };
@@ -197,12 +168,11 @@ class WalletService {
     }
 
     try {
-      const [timerBalance, trades, volume24h, solPrice, totalEligibleTokens] = await Promise.all([
+      const [timerBalance, trades, volume24h, solPrice] = await Promise.all([
         this.getTimerBalance(address),
         this.getTradeHistory(address),
         this.get24hVolume(),
-        getSolPrice(),
-        getTotalEligibleTokens(this.TIMER_TOKEN_MINT, this.HELIUS_API_KEY)
+        getSolPrice()
       ]);
 
       const holdingMetrics = this.calculateHoldingMetrics(trades);
@@ -212,12 +182,10 @@ class WalletService {
       const holdTimeMinutes = holdingMetrics.holdingTime / 60000;
       const timeMult = getTimeMult(holdTimeMinutes);
 
-      // Pool pro Zyklus (USD)
-      const poolPerCycleUSD = (volume24h * 0.0005) / 48;
-      // Token-Anteil
-      const tokenShare = totalEligibleTokens > 0 ? timerBalance / totalEligibleTokens : 0;
-      // Reward pro Holder (USD)
-      const rewardUSD = poolPerCycleUSD * tokenShare * timeMult * tierMult;
+      // NEUE REWARD-LOGIK: Nur individuelle Werte!
+      // Basis-Reward pro Token pro Zyklus (z.B. 0.0000001 USD pro Token)
+      const BASE_REWARD_PER_TOKEN = 0.0000001; // <- anpassen nach Wunsch
+      const rewardUSD = timerBalance * BASE_REWARD_PER_TOKEN * timeMult * tierMult;
       // In SOL umrechnen
       const reward = solPrice > 0 ? rewardUSD / solPrice : 0;
 
@@ -337,11 +305,30 @@ class WalletService {
       a.timestamp.getTime() - b.timestamp.getTime()
     );
 
-    // Calculate holding periods
+    // NEU: Haltezeit ab dem letzten Zeitpunkt, an dem der Bestand auf > 0 gestiegen ist
+    let balance = 0;
+    let lastAboveZero: Date | null = null;
+    for (const trade of sortedTrades) {
+      if (trade.type === 'buy') {
+        balance += trade.amount;
+        if (balance > 0) {
+          lastAboveZero = trade.timestamp;
+        }
+      } else if (trade.type === 'sell') {
+        balance -= trade.amount;
+        if (balance <= 0) {
+          lastAboveZero = null;
+        }
+      }
+    }
+    let currentHoldingTime = 0;
+    if (balance > 0 && lastAboveZero) {
+      currentHoldingTime = new Date().getTime() - lastAboveZero.getTime();
+    }
+
+    // Calculate holding periods (für averageHoldingTime und Score wie gehabt)
     let totalHoldingTime = 0;
     let holdingPeriods = 0;
-    let currentHoldingTime = 0;
-
     for (let i = 0; i < sortedTrades.length - 1; i++) {
       if (sortedTrades[i].type === 'buy') {
         const holdingTime = sortedTrades[i + 1].timestamp.getTime() - 
@@ -350,11 +337,8 @@ class WalletService {
         holdingPeriods++;
       }
     }
-
     // If still holding from last buy
     if (sortedTrades[sortedTrades.length - 1].type === 'buy') {
-      currentHoldingTime = new Date().getTime() - 
-                        sortedTrades[sortedTrades.length - 1].timestamp.getTime();
       totalHoldingTime += currentHoldingTime;
       holdingPeriods++;
     }

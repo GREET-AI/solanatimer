@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { TIMER_MINT } from '@/constants/timer';
 
@@ -40,11 +40,13 @@ const TIER_ICONS: Record<string, string> = {
 export default function WalletAnalyzer({ address, rewardInfo, tokenName = "TIMER" }: WalletAnalyzerProps) {
     const [tokens, setTokens] = useState<TokenInfo[]>([]);
     const [loading, setLoading] = useState(false);
-    const [liveReward, setLiveReward] = useState(0);
     const [showToast, setShowToast] = useState(false);
     const [toastValue, setToastValue] = useState(0);
-    const rewardRef = useRef(0);
     const popupInterval = 2; // seconds
+    // Current Live Rewards Counter: zählt jede Sekunde um rewardPerCycle/1800 hoch, bleibt stabil solange rewardPerCycle gleich bleibt
+    const rewardPerCycle = rewardInfo && Number(rewardInfo.reward) > 0 ? Number(rewardInfo.reward) : 0;
+    const rewardPerSecond = rewardPerCycle / 1800;
+    const [simLiveReward, setSimLiveReward] = useState(0);
 
     useEffect(() => {
         if (!address) return;
@@ -59,40 +61,38 @@ export default function WalletAnalyzer({ address, rewardInfo, tokenName = "TIMER
                 // No error handling needed as per the new code
             })
             .finally(() => setLoading(false));
-    }, [address]);
+    }, [address, rewardPerCycle]);
 
-    // Live-Reward-Refresh
+    // Live-Reward-Refresh als animierter Counter, der alle 30 Minuten resettet
     useEffect(() => {
-        if (!rewardInfo || !rewardInfo.reward) {
-            setLiveReward(0);
-            rewardRef.current = 0;
+        if (!rewardInfo || !rewardInfo.reward || Number(rewardInfo.reward) <= 0) {
+            setSimLiveReward(0);
             return;
         }
-        setLiveReward(0);
-        rewardRef.current = 0;
-        const rewardPerCycle = rewardInfo.reward;
-        const secondsPerCycle = 30 * 60; // 30 min
-        const rewardPerSecond = rewardPerCycle / secondsPerCycle;
+        let start = Date.now();
+        const secondsPerCycle = 1800;
         const interval = setInterval(() => {
-            rewardRef.current += rewardPerSecond;
-            setLiveReward(rewardRef.current);
+            const secondsPassed = Math.floor((Date.now() - start) / 1000);
+            if (secondsPassed >= secondsPerCycle) {
+                start = Date.now();
+                setSimLiveReward(0);
+            } else {
+                setSimLiveReward(Number(((rewardPerCycle / secondsPerCycle) * secondsPassed).toFixed(6)));
+            }
         }, 1000);
         return () => clearInterval(interval);
-    }, [address, rewardInfo]);
+    }, [address, rewardInfo, rewardPerCycle]);
 
     // Popup/Toast für Reward-Increment (realistisch)
     useEffect(() => {
         if (!rewardInfo) return;
-        const rewardPerCycle = rewardInfo.reward;
-        const secondsPerCycle = 30 * 60;
-        const rewardPerSecond = rewardPerCycle / secondsPerCycle;
         const toastInterval = setInterval(() => {
             setToastValue(rewardPerSecond * popupInterval);
             setShowToast(true);
             setTimeout(() => setShowToast(false), 1200);
         }, popupInterval * 1000);
         return () => clearInterval(toastInterval);
-    }, [rewardInfo]);
+    }, [rewardPerSecond, rewardPerCycle]);
 
     if (loading) {
         return (
@@ -140,13 +140,15 @@ export default function WalletAnalyzer({ address, rewardInfo, tokenName = "TIMER
                                 <p className="text-sm text-yellow-300/70">{tokenName}</p>
                             </div>
                         </div>
-                        <div className="text-right">
-                            {/* Live-Reward-Refresh */}
-                            <span className="font-mono text-2xl text-yellow-400 block animate-glow">
-                                +{liveReward.toFixed(6)} SOL
-                            </span>
-                            <span className="block text-xs text-yellow-300/50 mt-1">Live Reward</span>
-                        </div>
+                        {/* Current Live Rewards Counter */}
+                        {rewardPerCycle > 0 && (
+                            <div className="text-right">
+                                <span className="font-mono text-2xl text-yellow-400 block animate-glow">
+                                    +{simLiveReward.toFixed(6)} SOL
+                                </span>
+                                <span className="block text-xs text-yellow-300/50 mt-1">Current Live Rewards</span>
+                            </div>
+                        )}
                     </div>
                     {/* Reward Info */}
                     <div className="mt-4 pt-4 border-t border-yellow-400/20 flex flex-col md:flex-row md:justify-between md:items-center gap-2">

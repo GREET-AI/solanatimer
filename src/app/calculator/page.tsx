@@ -150,23 +150,25 @@ export default function CalculatorPage() {
       });
   }, [walletAddress, error]);
 
-  // Calculate reward and tier for the current wallet (keine Endlosschleife mehr!)
+  // Calculate reward and tier for the current wallet
   let rewardInfo: RewardInfo | null = null;
+  let rewardPerCycle = 0;
   if (tokenData && tokenData.amount && dailyVolumeUsd !== null && analysis) {
-    const holdTimeMinutes = analysis.heldForMinutes ?? 0;
+    const holdTimeMinutes = analysis.heldForMinutes ?? 0; // ECHTE Haltezeit anzeigen
     const cyclesPerDay = (24 * 60) / REWARD_CYCLE_MINUTES;
     const totalFees = dailyVolumeUsd * FEE_PERCENT;
     const rewardPoolUsd = totalFees * REWARD_SHARE;
     const rewardPoolSol = rewardPoolUsd / solPrice / cyclesPerDay;
     const tokens = tokenData.amount;
     const tokenMult = getTokenMultiplier(tokens);
-    const timeMult = getTimeMultiplier(holdTimeMinutes);
-    const reward = rewardPoolSol * tokenMult * timeMult;
+    // Reward per cycle immer so, als hätte man mindestens 30 Minuten gehalten (timeMult = 1)
+    const timeMult = 1;
+    rewardPerCycle = rewardPoolSol * tokenMult * timeMult;
     rewardInfo = {
       tokens,
       holdTimeMinutes,
       tier: getTierName(tokens),
-      reward: Number(reward.toFixed(6)),
+      reward: Number(rewardPerCycle.toFixed(6)),
     };
   }
 
