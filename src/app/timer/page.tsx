@@ -148,29 +148,58 @@ export default function Timer() {
             </div>
           </div>
         </div>
-        {/* Share on X Card */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-[#14F195]/20 relative overflow-hidden group hover:border-[#14F195]/40 transition-all duration-300 flex flex-col min-h-[320px]">
-          <div className="absolute -top-4 -left-4 w-16 h-16 bg-[#14F195]/10 rounded-full flex items-center justify-center text-3xl font-bold text-[#14F195] transform -rotate-12">
+        {/* Dev Card */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-[#9945FF]/20 relative overflow-hidden group hover:border-[#9945FF]/40 transition-all duration-300 flex flex-col min-h-[320px]">
+          <div className="absolute -top-4 -left-4 w-16 h-16 bg-[#9945FF]/10 rounded-full flex items-center justify-center text-3xl font-bold text-[#9945FF] transform -rotate-12">
             <XIcon />
           </div>
           <div className="absolute inset-0 bg-gradient-to-br from-[#9945FF]/30 via-purple-900/20 to-[#14F195]/30 animate-gradient-slow group-hover:from-[#9945FF]/40 group-hover:to-[#14F195]/40" />
           <div className="relative z-10 flex-1 flex flex-col">
-            <h3 className="text-2xl font-bold mb-6 text-[#14F195] mt-8">Share & Win Rewards!</h3>
-            <p className="text-white/80 mb-auto text-sm">Share your excitement about Solana Timer on X. Every hour, you have a chance to win exclusive rewards for spreading the word!</p>
+            <h3 className="text-2xl font-bold mb-6 text-[#9945FF] mt-8">Introducing the Dev</h3>
+            <div className="mb-2 flex items-center gap-2">
+              <span className="font-mono text-base text-[#14F195]">@MrMoonZyno</span>
+            </div>
+            <div className="font-bold text-white mb-2">CHARS | Crypto Trader | No shills | Coder</div>
+            <div className="text-white/80 mb-auto text-sm">💻 Code gremlin | 🧠 Overthinking in TypeScript | 🛰️ Building dumb stuff that might accidentally go viral | Opinions = mine, bugs = features</div>
             <div className="flex justify-end mt-4">
+              <a 
+                href="https://x.com/MrMoonZyno"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#9945FF] hover:bg-[#9945FF]/80 text-white font-bold px-6 py-2 rounded-lg text-base transition-all flex items-center group border-2 border-black/20 hover:border-[#14F195] shadow-lg relative overflow-hidden font-sophie"
+                style={{ minWidth: '160px' }}
+              >
+                <span className="relative z-10">View on X</span>
+                <ArrowRightCircle className="w-5 h-5 ml-2 text-white group-hover:text-[#14F195] transition-colors" />
+                <span className="absolute inset-0 rounded-lg pointer-events-none group-hover:animate-gloss" style={{background: 'linear-gradient(120deg,rgba(255,255,255,0.15) 0%,rgba(255,255,255,0.35) 50%,rgba(255,255,255,0.15) 100%)', opacity: 0.7}}></span>
+              </a>
+            </div>
+          </div>
+        </div>
+        {/* Share on X Card (populär & animiert) */}
+        <div className="bg-gradient-to-br from-[#14F195]/80 via-[#9945FF]/60 to-[#14F195]/80 border-4 border-[#14F195] animate-pulse-glow shadow-2xl rounded-xl p-8 relative overflow-hidden group flex flex-col min-h-[340px] scale-105 hover:scale-110 transition-transform duration-300">
+          <div className="absolute -top-4 -left-4 w-16 h-16 bg-[#14F195]/30 rounded-full flex items-center justify-center text-3xl font-bold text-[#14F195] transform -rotate-12 animate-bounce-slow">
+            <XIcon />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-br from-[#14F195]/10 via-[#9945FF]/10 to-[#14F195]/10 animate-gradient-slow" />
+          <div className="relative z-10 flex-1 flex flex-col">
+            <h3 className="text-3xl font-extrabold mb-4 text-[#14F195] mt-8 animate-bounce">🚀 Share & Win Rewards!</h3>
+            <p className="text-white/90 mb-2 text-lg font-bold animate-pulse">Share your excitement about Solana Timer on X and win exclusive rewards every hour!</p>
+            <p className="text-[#14F195] text-base font-semibold mb-auto animate-pulse">The more you share, the higher your chances!<br/>Let&apos;s make Solana Timer go viral!</p>
+            <div className="flex justify-end mt-6">
               <a 
                 href={`https://x.com/intent/tweet?text=${encodeURIComponent('⏰ Check out Solana Timer – earn SOL every 30 minutes just for holding! Powered by @pumpdotfun & @Solana_Timer. Join the degen revolution: https://solanatimer.io #Solana #Crypto #Airdrop')}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-[#14F195] hover:bg-[#14F195]/80 text-black font-bold px-6 py-2 rounded-lg text-base transition-all flex items-center group border-2 border-black/20 hover:border-[#9945FF] shadow-lg relative overflow-hidden font-sophie"
-                style={{ minWidth: '160px' }}
+                className="bg-[#14F195] hover:bg-[#14F195]/90 text-black font-extrabold px-8 py-4 rounded-lg text-xl transition-all flex items-center group border-2 border-[#9945FF] hover:border-[#14F195] shadow-2xl relative overflow-hidden font-sophie animate-bounce"
+                style={{ minWidth: '200px', boxShadow: '0 0 32px #14F19599, 0 0 64px #9945FF55' }}
               >
-                <span className="relative z-10">Share on X</span>
-                <ArrowRightCircle className="w-5 h-5 ml-2 text-black group-hover:text-[#9945FF] transition-colors" />
+                <span className="relative z-10 animate-pulse">🔥 Share on X</span>
+                <ArrowRightCircle className="w-7 h-7 ml-3 text-black group-hover:text-[#9945FF] transition-colors animate-bounce" />
                 <span className="absolute inset-0 rounded-lg pointer-events-none group-hover:animate-gloss" style={{background: 'linear-gradient(120deg,rgba(255,255,255,0.15) 0%,rgba(255,255,255,0.35) 50%,rgba(255,255,255,0.15) 100%)', opacity: 0.7}}></span>
               </a>
             </div>
-            <div className="text-xs text-white/60 mt-2 text-center">Every hour, we pick random sharers for exclusive rewards. Don&apos;t miss out!</div>
+            <div className="text-xs text-white/80 mt-4 text-center animate-pulse">Every hour, we pick random sharers for exclusive rewards. Don&apos;t miss out – share now and boost your luck!</div>
           </div>
         </div>
       </div>
