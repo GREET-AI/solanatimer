@@ -170,7 +170,6 @@ export default function DoTheMath() {
                     <div className="bg-black/50 rounded-lg p-4 border border-yellow-400/20">
                       <h3 className="text-lg font-semibold text-yellow-400 mb-2">Reward per cycle (in SOL)</h3>
                       <pre className="text-sm font-mono bg-black/70 p-3 rounded overflow-x-auto text-white/90">
-// Reward per cycle (in SOL)
 const reward = (dailyVolumeUSD * 0.0005 / 48)
   * (yourTokens / allEligibleTokens)
   * timeMultiplier
