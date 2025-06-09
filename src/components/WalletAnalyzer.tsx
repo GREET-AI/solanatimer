@@ -65,11 +65,11 @@ export default function WalletAnalyzer({ address, rewardInfo, tokenName = "TIMER
 
     // Popup/Toast für Reward-Increment (realistisch) + Counter-Sync
     useEffect(() => {
-        if (!rewardInfo || rewardPerSecond <= 0) {
+        if (rewardPerCycle <= 0) {
             setSimLiveReward(0);
             return;
         }
-        setSimLiveReward(0);
+        setSimLiveReward(0); // Nur bei Änderung von rewardPerCycle resetten
         const interval = setInterval(() => {
             setToastValue(rewardPerSecond * popupInterval);
             setShowToast(true);
@@ -77,7 +77,7 @@ export default function WalletAnalyzer({ address, rewardInfo, tokenName = "TIMER
             setTimeout(() => setShowToast(false), 1200);
         }, popupInterval * 1000);
         return () => clearInterval(interval);
-    }, [rewardPerSecond, rewardPerCycle, rewardInfo]);
+    }, [rewardPerCycle]);
 
     if (loading) {
         return (
