@@ -11,13 +11,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Solana Theme Colors */
+/* Moon Theme Colors */
 :root {
-  --solana-purple: #9945FF;
-  --solana-green: #14F195;
-  --solana-gradient-start: #9945FF;
-  --solana-gradient-mid: #14F195;
-  --solana-gradient-end: #14F195;
+  --moon-yellow: #D6FF00;
+  --moon-neon: #B6FF00;
+  --moon-gradient-start: #D6FF00;
+  --moon-gradient-end: #B6FF00;
   --font-sophie: 'SophieComic', system-ui, sans-serif;
   --background: #000000;
 }
@@ -47,34 +46,34 @@ button,
 }
 
 /* Gradient Utilities */
-.solana-gradient-bg {
-  background: linear-gradient(45deg, var(--solana-gradient-start), var(--solana-gradient-mid), var(--solana-gradient-end));
+.moon-gradient-bg {
+  background: linear-gradient(45deg, var(--moon-gradient-start), var(--moon-gradient-end));
   background-size: 200% 200%;
   animation: gradient 15s ease infinite;
 }
 
-.solana-gradient-text {
+.moon-gradient-text {
   font-family: var(--font-sophie);
-  background: linear-gradient(45deg, var(--solana-purple), var(--solana-green));
+  background: linear-gradient(45deg, var(--moon-yellow), var(--moon-neon));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   animation: gradient 5s ease infinite;
 }
 
-.solana-card-glow {
+.moon-card-glow {
   position: relative;
   overflow: hidden;
 }
 
-.solana-card-glow::before {
+.moon-card-glow::before {
   content: '';
   position: absolute;
   top: -50%;
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(153,69,255,0.1) 0%, rgba(20,241,149,0.1) 100%);
+  background: radial-gradient(circle, rgba(214,255,0,0.1) 0%, rgba(182,255,0,0.1) 100%);
   animation: rotate 10s linear infinite;
 }
 

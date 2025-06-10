@@ -88,7 +88,7 @@ function MobileNav() {
                   className="rounded-full relative hover:scale-105 transition-transform duration-500 group-hover:rotate-12"
                 />
               </div>
-              <h2 className="mb-2 px-4 text-2xl font-bold text-center tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-solana-purple to-solana-green animate-gradient">
+              <h2 className="mb-2 px-4 text-2xl font-bold text-center tracking-wide bg-clip-text text-transparent solana-gradient-text">
                 Solana Timer
               </h2>
             </Link>
@@ -162,7 +162,7 @@ export function Sidebar({ className }: SidebarProps) {
                   className="rounded-full relative hover:scale-105 transition-transform duration-500 group-hover:rotate-12"
                 />
               </div>
-              <h2 className="mb-2 px-4 text-2xl font-bold text-center tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-solana-purple to-solana-green animate-gradient">
+              <h2 className="mb-2 px-4 text-2xl font-bold text-center tracking-wide bg-clip-text text-transparent solana-gradient-text">
                 Solana Timer
               </h2>
             </Link>

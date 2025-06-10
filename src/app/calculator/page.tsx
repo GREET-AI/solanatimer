@@ -297,7 +297,7 @@ export default function CalculatorPage() {
             <h1 className="text-6xl font-bold tracking-tight relative">
               <span className="relative">
                 <span className="absolute inset-0 bg-gradient-to-r from-[#9945FF]/20 to-[#14F195]/20 blur-lg opacity-30" />
-                <span className="relative bg-gradient-to-r from-[#9945FF] to-[#14F195] bg-clip-text text-transparent">
+                <span className="relative solana-gradient-text">
                   Reward Calculator
                 </span>
               </span>

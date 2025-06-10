@@ -152,8 +152,8 @@ export default function DoTheMath() {
               {/* Market Cap Multiplier Card */}
               <div className="bg-black/30 backdrop-blur-sm rounded-lg p-8 border border-yellow-400/40 mb-8 relative overflow-visible solana-card-glow">
                 <div className="absolute -inset-2 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 rounded-2xl blur-2xl opacity-30 animate-pulse z-0" />
-                <div className="absolute -top-4 -left-4 w-16 h-16 bg-yellow-400/10 rounded-full flex items-center justify-center text-3xl font-bold text-yellow-400 transform -rotate-12">
-                  <Calculator className="w-8 h-8 text-yellow-400" />
+                <div className="absolute -top-4 -left-4 w-16 h-16 bg-moon-yellow/10 rounded-full flex items-center justify-center text-3xl font-bold text-moon-yellow transform -rotate-12">
+                  <Calculator className="w-8 h-8 text-moon-yellow" />
                 </div>
                 <div className="absolute -top-8 -right-8 w-32 h-32 bg-yellow-400/5 rounded-full flex items-center justify-center transform rotate-12 group-hover:rotate-6 transition-transform">
                   <Image
@@ -219,7 +219,7 @@ const reward = (dailyVolumeUSD * 0.0005 / 48)
 
               {/* Time Multiplier Card */}
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-[#9945FF]/20 relative overflow-hidden group hover:border-[#9945FF]/40 transition-all duration-300 flex flex-col min-h-[420px]">
-                <div className="absolute -top-4 -left-4 w-16 h-16 bg-[#14F195]/10 rounded-full flex items-center justify-center text-3xl font-bold text-[#14F195] transform -rotate-12">
+                <div className="absolute -top-4 -left-4 w-16 h-16 bg-moon-yellow/10 rounded-full flex items-center justify-center text-3xl font-bold text-moon-yellow transform -rotate-12">
                   <Image
                     src="/clock.gif"
                     alt="Timer"
@@ -299,8 +299,8 @@ const reward = (dailyVolumeUSD * 0.0005 / 48)
                         <h3 className="text-lg font-semibold text-[#14F195] mb-2">Distribution Process</h3>
                         <pre className="text-sm font-mono bg-black/50 p-3 rounded overflow-x-auto">
 {`async function processRewards() {
-  // Get all token holders from Pump.fun
-  const holders = await fetchPumpHolders();
+  // Get all token holders from moon.it
+  const holders = await fetchMoonHolders();
   const rewardPool = await getRewardPool();
 
   for (const holder of holders) {
@@ -334,7 +334,7 @@ const reward = (dailyVolumeUSD * 0.0005 / 48)
                       <div className="bg-[#14F195]/10 rounded-lg p-4 border border-white/10">
                         <h3 className="text-lg font-semibold text-white mb-2">System Features</h3>
                         <ul className="list-disc list-inside text-white/70 space-y-2">
-                          <li>Pump.fun API integration</li>
+                          <li>moon.it API integration</li>
                           <li>30-minute distribution cycles</li>
                           <li>Automatic balance tracking</li>
                           <li>Holding time calculation</li>
@@ -345,7 +345,7 @@ const reward = (dailyVolumeUSD * 0.0005 / 48)
                       <div className="bg-[#14F195]/10 rounded-lg p-4 border border-white/10">
                         <h3 className="text-lg font-semibold text-white mb-2">Technical Stack</h3>
                         <ul className="list-disc list-inside text-white/70 space-y-2">
-                          <li>Pump.fun token tracking</li>
+                          <li>moon.it token tracking</li>
                           <li>Node.js distribution system</li>
                           <li>Redis for holder data</li>
                           <li>Automated SOL transfers</li>

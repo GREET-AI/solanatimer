@@ -17,8 +17,11 @@ module.exports = {
     },
     extend: {
       colors: {
-        'solana-purple': '#9945FF',
-        'solana-green': '#14F195',
+        'moon-yellow': '#D6FF00',
+        'moon-neon': '#B6FF00',
+        'moon-dark': '#000000',
+        'moon-gray': '#1A1A1A',
+        'moon-white': '#FFFFFF',
       },
       keyframes: {
         "led-flow": {

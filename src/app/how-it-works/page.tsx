@@ -226,7 +226,7 @@ export default function HowItWorks() {
               <h1 className="text-6xl font-bold tracking-tight relative">
                 <span className="relative">
                   <span className="absolute inset-0 bg-gradient-to-r from-[#9945FF]/20 to-[#14F195]/20 blur-lg opacity-30" />
-                  <span className="relative bg-gradient-to-r from-[#9945FF] to-[#14F195] bg-clip-text text-transparent">
+                  <span className="relative solana-gradient-text">
                     Welcome to the Solana Timer!
                   </span>
                 </span>
@@ -354,11 +354,11 @@ export default function HowItWorks() {
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-br from-[#9945FF]/30 via-purple-900/20 to-[#14F195]/30 animate-gradient-slow group-hover:from-[#9945FF]/40 group-hover:to-[#14F195]/40" />
                 <div className="relative z-10 flex-1 flex flex-col">
-                  <h3 className="text-2xl font-bold mb-6 text-[#14F195] mt-8">Buy on Pump.fun</h3>
+                  <h3 className="text-2xl font-bold mb-6 text-[#14F195] mt-8">Buy on moon.it</h3>
                   <ul className="space-y-3 text-white/80 text-sm mb-auto">
                     <li className="flex items-start">
                       <ArrowRightCircle className="w-4 h-4 mr-2 mt-0.5 text-[#14F195]" />
-                      <span>Visit pump.fun</span>
+                      <span>Visit moon.it</span>
                     </li>
                     <li className="flex items-start">
                       <ArrowRightCircle className="w-4 h-4 mr-2 mt-0.5 text-[#14F195]" />
@@ -371,7 +371,7 @@ export default function HowItWorks() {
                   </ul>
                   <div className="flex justify-end mt-4">
                     <a 
-                      href="https://pump.fun/board"
+                      href="https://moon.it"
                       target="_blank"
                       rel="noopener noreferrer" 
                       className="bg-purple-900/40 hover:bg-purple-900/60 text-white/70 hover:text-white/90 px-4 py-2 rounded-lg text-sm transition-all flex items-center group font-sophie border-2 border-white/10 hover:border-white/20"
